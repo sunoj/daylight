@@ -1,0 +1,17 @@
+{
+  "name": "@daylight/core-calendar",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@daylight/domain": "0.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

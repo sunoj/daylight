@@ -1,0 +1,404 @@
+@import "./popup-calendar-styles.css";
+@import "./detail.css";
+@import "./solar-term-icon-palette.css";
+@import "./settings.css";
+@import "./holiday.css";
+@import "./info.css";
+
+@font-face { font-family: "IBM Plex Sans"; font-style: normal; font-weight: 100 700; font-display: swap; src: url("/fonts/IBMPlexSans-VF.ttf") format("truetype"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/IBMPlexMono-Regular.ttf") format("truetype"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/IBMPlexMono-Medium.ttf") format("truetype"); }
+:root {
+  color-scheme: light;
+  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'PingFang SC', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --ink: #1B1B1A; --ink-2: #5C5B57; --ink-3: #66655F; --ink-4: #706F69;
+  --paper: #F6F5F3; --surface: #FFFFFF; --surface-2: #EFEEEB; --surface-3: #E7E5E1;
+  --line: #E4E2DD; --line-2: #D5D3CD;
+  --date-selection: #E1E8DC; --date-selection-border: #A8B79F;
+  --accent: var(--ink); --accent-weak: var(--surface-2); --accent-ink: var(--surface);
+  --pos: #5E7257; --neg: #97574B; --warn: #9A7B43;
+  --holiday-rust: #A8544A; --holiday-stone: #4A5A6B; --holiday-olive: #6A6E52; --holiday-amber: #9A7B43; --holiday-green: #5E7257;
+  --shadow-1: 0 1px 2px rgba(28,26,22,0.05);
+  --shadow-2: 0 4px 16px rgba(28,26,22,0.08);
+  --r-xs: 4px; --r-sm: 6px; --r-md: 8px; --r-lg: 12px; --r-pill: 999px;
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
+  --screen-gutter: 14px;
+  --ease: cubic-bezier(0.2, 0, 0, 1); --dur-fast: 120ms; --dur: 200ms;
+}
+.dark {
+  color-scheme: dark;
+  --ink: #ECEBE7; --ink-2: #A7A6A0; --ink-3: #94938E; --ink-4: #878681;
+  --paper: #161614; --surface: #1E1E1C; --surface-2: #262624; --surface-3: #2F2F2C;
+  --line: #2C2C29; --line-2: #3A3A36;
+  --date-selection: #354133; --date-selection-border: #71846A;
+  --accent: var(--ink); --accent-weak: #262624; --accent-ink: #161614;
+  --holiday-rust: #D08A7D; --holiday-stone: #8FA0B3; --holiday-olive: #A3A88A; --holiday-amber: #C4A66B; --holiday-green: #8FA487;
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.4); --shadow-2: 0 4px 16px rgba(0,0,0,0.5);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+    --ink: #ECEBE7; --ink-2: #A7A6A0; --ink-3: #94938E; --ink-4: #878681;
+    --paper: #161614; --surface: #1E1E1C; --surface-2: #262624; --surface-3: #2F2F2C;
+    --line: #2C2C29; --line-2: #3A3A36;
+    --date-selection: #354133; --date-selection-border: #71846A;
+    --accent: var(--ink); --accent-weak: #262624; --accent-ink: #161614;
+    --holiday-rust: #D08A7D; --holiday-stone: #8FA0B3; --holiday-olive: #A3A88A; --holiday-amber: #C4A66B; --holiday-green: #8FA487;
+    --shadow-1: 0 1px 2px rgba(0,0,0,0.4); --shadow-2: 0 4px 16px rgba(0,0,0,0.5);
+  }
+}
+* { box-sizing: border-box; }
+html,
+body {
+  width: 398px;
+  max-height: 600px;
+  margin: 0;
+  overflow: hidden;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 13px/1.4 var(--font-sans);
+}
+button, input, select, textarea { font: inherit; }
+button {
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+button.primary { min-height: 30px; border-radius: var(--r-sm); padding: 0 10px; background: var(--accent); color: var(--accent-ink); }
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 398px;
+  max-height: 600px;
+  overflow: hidden;
+  /* No radius, border or shadow here: Chrome already draws the popup's own
+     rounded frame and shadow, and a second card inside it left a mismatched
+     sliver at every corner. The popup fills Chrome's frame edge to edge. */
+  background: var(--surface);
+}
+.workspace {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.month-stack {
+  display: grid;
+  flex-shrink: 0;
+  gap: 0;
+}
+.title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.subtle { color: var(--ink-3); font-size: 11.5px; }
+.month-header {
+  display: grid;
+  flex-shrink: 0;
+  grid-template-columns: 68px 1fr 68px;
+  align-items: center;
+  padding: 15px 16px 11px;
+}
+.header-side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.header-side.end { justify-content: flex-end; }
+.title-block {
+  min-width: 0;
+  text-align: center;
+}
+.title-block .subtle {
+  margin-top: 3px;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+}
+.tile:hover,
+.footer-button:hover {
+  background: var(--surface-3);
+}
+.weekdays,
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+.with-week-numbers {
+  grid-template-columns: 32px repeat(7, minmax(0, 1fr));
+}
+.weekday-wrap { padding: 0 14px; }
+.weekdays { padding-bottom: 6px; }
+.weekday,
+.week-no {
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+.weekday.weekend,
+.week-no {
+  color: var(--ink-4);
+}
+.grid-wrap { padding: 0 var(--screen-gutter) 14px; }
+.day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* Centred, like the macOS client's CalendarDateCell (stack.alignment =
+     .centerX). Left-aligning made one- and two-digit days start at the same
+     x but end at different ones, so the grid read as ragged. */
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  min-width: 0;
+  padding: 5px 4px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  text-align: center;
+}
+.grid.compact .day {
+  height: 32px;
+  justify-content: center;
+}
+.day:hover {
+  background: var(--surface-2);
+}
+.day.selected {
+  background: var(--date-selection);
+  box-shadow: inset 0 0 0 1px var(--date-selection-border);
+}
+.outside { opacity: 0.42; }
+.day.today {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.day.today .num,
+.day.today .lunar {
+  color: var(--accent-ink);
+}
+.day.today .num {
+  font-weight: 700;
+}
+.day.today .mark-dot {
+  background: var(--accent-ink);
+}
+.workday-badge {
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  color: var(--ink-2);
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.day.today .workday-badge { color: var(--accent-ink); }
+.day.workday .marks { right: auto; left: 4px; }
+.num {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.lunar {
+  display: block;
+  max-width: 100%;
+  margin-top: 1px;
+  color: var(--ink-3);
+  font-size: 10.5px;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.marks {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  display: flex;
+  gap: 2px;
+}
+.mark-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+}
+.holiday-dots {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  display: flex;
+  gap: 3px;
+  transform: translateX(-50%);
+}
+.holiday-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-pill);
+  opacity: 0.82;
+}
+.holiday-rust { background: var(--holiday-rust); }
+.holiday-stone { background: var(--holiday-stone); }
+.holiday-olive { background: var(--holiday-olive); }
+.holiday-amber { background: var(--holiday-amber); }
+.holiday-green { background: var(--holiday-green); }
+.footer {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding: 9px 18px;
+  color: var(--ink-3);
+}
+.footer-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--ink-3);
+}
+.today-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+.today-link::before {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  content: "";
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  width: 398px;
+  height: 600px;
+  max-height: 600px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.screen-header {
+  display: grid;
+  flex-shrink: 0;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding: 12px 12px 10px;
+}
+
+.screen-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.screen-back:hover {
+  background: var(--surface-2);
+}
+
+.screen-title {
+  grid-column: 2;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.screen-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* Settings is the one screen taller than the popup, so only it grew a
+     scrollbar — its cards sat at 14/29 while every other screen sat at 14/14,
+     and flipping between them shifted the whole page 15px sideways. */
+  scrollbar-gutter: stable;
+}
+
+.screen-content {
+  display: grid;
+  gap: 0;
+  padding: 0 var(--screen-gutter);
+}
+
+.settings-nav {
+  display: grid;
+  gap: 10px;
+  padding: 0 0 14px;
+}
+
+.screen-body .detail {
+  border-top: 0;
+}
+
+.screen-body .detail-head {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.screen-body .detail-section,
+.screen-body .detail-info-card {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.screen-body .info-panel {
+  padding-top: 8px;
+}
+
+.screen-body .shortcut-list {
+  padding: 8px 0 16px;
+}
+
+.screen-body .info-content {
+  max-height: none;
+}
+
+.screen-body .info-body,
+.screen-body .info-faq,
+.screen-body .info-changelog {
+  max-height: none;
+}

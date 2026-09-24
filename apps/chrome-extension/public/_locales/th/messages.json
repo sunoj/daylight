@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "ปฏิทิน Daylight",
+    "description": "Extension name shown in the browser and on the store listing."
+  },
+  "appShortName": {
+    "message": "Daylight",
+    "description": "Short name shown under the toolbar icon."
+  },
+  "appDescription": {
+    "message": "ส่วนขยายปฏิทินสำหรับปฏิทินจันทรคติ 24 ฤดูกาลจีน วันหยุดราชการ และดวงจันทร์",
+    "description": "Store listing description."
+  }
+}

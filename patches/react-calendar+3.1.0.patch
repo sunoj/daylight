@@ -1,0 +1,26 @@
+diff --git a/node_modules/react-calendar/dist/umd/MonthView/WeekNumbers.js b/node_modules/react-calendar/dist/umd/MonthView/WeekNumbers.js
+index 66e048f..ca2b027 100644
+--- a/node_modules/react-calendar/dist/umd/MonthView/WeekNumbers.js
++++ b/node_modules/react-calendar/dist/umd/MonthView/WeekNumbers.js
+@@ -62,7 +62,7 @@ function WeekNumbers(props) {
+     onFocus: onMouseLeave,
+     onMouseOver: onMouseLeave,
+     style: {
+-      flexBasis: 'calc(100% * (1 / 8)',
++      flexBasis: 'calc(10%)',
+       flexShrink: 0
+     }
+   }, weekNumbers.map(function (weekNumber, weekIndex) {
+diff --git a/node_modules/react-calendar/src/MonthView/WeekNumbers.jsx b/node_modules/react-calendar/src/MonthView/WeekNumbers.jsx
+index 9718bd5..4563087 100644
+--- a/node_modules/react-calendar/src/MonthView/WeekNumbers.jsx
++++ b/node_modules/react-calendar/src/MonthView/WeekNumbers.jsx
+@@ -61,7 +61,7 @@ export default function WeekNumbers(props) {
+       direction="column"
+       onFocus={onMouseLeave}
+       onMouseOver={onMouseLeave}
+-      style={{ flexBasis: 'calc(100% * (1 / 8)', flexShrink: 0 }}
++      style={{ flexBasis: 'calc(10%)', flexShrink: 0 }}
+     >
+       {
+         weekNumbers.map((weekNumber, weekIndex) => (

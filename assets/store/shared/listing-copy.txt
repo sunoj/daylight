@@ -1,0 +1,71 @@
+=============================================================
+DESCRIPTION — 中文
+=============================================================
+昼间是一个把农历放回日历里的浏览器扩展。
+
+点开工具栏图标就是一整月：每个日期下面直接标着农历，二十四节气单独加粗，周数在左边一列，当天的月相和你写下的记录都在同一屏，不用再点进去。
+
+▪ 农历与二十四节气
+公历日期下方直接显示农历日与节气，全部在你的设备上计算，不联网。
+
+▪ 法定节假日订阅
+内置中国大陆、中国香港特别行政区、中国台湾与泰国的假日日历，每个来源可以单独设颜色；也可以粘贴任意 iCal (.ics) 地址订阅自己的日历。
+
+▪ 日记与待办
+在任意一天写下一笔。以 [] 开头就变成待办，点一下打勾，完成的会划掉。日记只保存在本机，不会上传，也不参与同步。
+
+▪ 月相
+每天的月相、照亮百分比与月龄。
+
+▪ 快速跳转
+点标题逐级缩放：月 → 年 → 十年 → 世纪。年视图标出每个月横跨的农历月，十年视图标出每一年的干支。
+
+▪ 按你的习惯来
+中文 / English / ไทย 三种界面语言，可自由切换，不跟随浏览器语言。四种周起始规则（ISO 8601、美式、阿拉伯、希伯来）。农历与周数都能单独关掉。深色模式跟随系统或手动指定。
+
+关于隐私：昼间没有账号、没有统计分析、没有广告。它唯一会发出的网络请求，就是下载你订阅的那几个公共假日日历。你写的东西不会离开你的设备——因为我们根本没有接收它的服务器。
+
+开源，GPL-2.0。隐私政策：https://daylight.mings.work/privacy
+
+=============================================================
+DESCRIPTION — English
+=============================================================
+Daylight puts the Chinese lunar calendar back into your calendar.
+
+Click the toolbar icon and you get the whole month at once: the lunar date sits under every day, the 24 solar terms are picked out in bold, week numbers run down the side, and today's moon phase and your own notes are on the same screen — no drilling down.
+
+▪ Lunar dates and the 24 solar terms
+Shown under each Gregorian date, calculated on your device with no network request.
+
+▪ Public holiday subscriptions
+Mainland China, Hong Kong SAR, Taiwan and Thailand are built in, each with its own colour. You can also paste any iCal (.ics) address to subscribe to a calendar of your own.
+
+▪ Diary and todos
+Write a line against any day. Start it with [] and it becomes a todo you can tick off; completed ones are struck through. Diary entries are stored on your device only — never uploaded, never synced.
+
+▪ Moon phases
+The phase, percentage illuminated and moon age for any date.
+
+▪ Jump anywhere
+Tap the title to zoom out: month, year, decade, century. The year grid labels the lunar months each month spans; the decade grid labels each year's stem-branch name.
+
+▪ Set it up your way
+Three interface languages — 中文, English, ไทย — switched by you, not inherited from the browser. Four week-numbering rules (ISO 8601, US, Arabic, Hebrew). Lunar dates and week numbers can each be turned off. Dark mode follows the system or is set by hand.
+
+On privacy: Daylight has no accounts, no analytics and no ads. The only network requests it makes are downloads of the public holiday calendars you subscribed to. What you write never leaves your device, because there is no server of ours to receive it.
+
+Open source, GPL-2.0. Privacy policy: https://daylight.mings.work/privacy
+
+=============================================================
+SEARCH TERMS — up to 7, <=30 chars each, <=21 words total
+=============================================================
+农历日历 / 二十四节气 / lunar calendar / chinese calendar /
+solar terms / public holidays / moon phase
+
+13 words across 7 terms (cap 21). Longest term 15 chars (cap 30).
+
+=============================================================
+PRIVACY POLICY URL
+=============================================================
+https://daylight.mings.work/privacy
+(No .html — Cloudflare Pages serves these extensionless and 308s the .html form.)

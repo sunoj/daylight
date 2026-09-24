@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "昼间日历",
+    "description": "Extension name shown in the browser and on the store listing."
+  },
+  "appShortName": {
+    "message": "昼间",
+    "description": "Short name shown under the toolbar icon."
+  },
+  "appDescription": {
+    "message": "查询农历、二十四节气、公共假日与月相的日历扩展。",
+    "description": "Store listing description."
+  }
+}

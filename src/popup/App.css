@@ -1,0 +1,477 @@
+@tailwind components;
+@tailwind utilities;
+
+@import '../../node_modules/microtip/microtip.min.css';
+@import '../../node_modules/@hackplan/uui/lib/index.css';
+@import './Calendar.css';
+
+/* purgecss start ignore */
+body {
+  margin: 0;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+body.light-mode {
+  background-color: #fff;
+  color: #333;
+  transition: background-color 0.3s ease;
+}
+
+body.dark-mode {
+  background-color: #1a1919;
+  color: #999;
+}
+
+a{
+  color: #888;
+}
+
+button{
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.App .react-calendar {
+  min-width: 460px;
+  max-width: 800px;
+  border: none;
+}
+
+.App .settings {
+  width: 460px;
+  text-align: left;
+}
+
+.dark-mode button{
+  color: #999;
+}
+
+.App button:focus {
+  outline: none;
+}
+
+.App *:focus {
+  outline: none;
+}
+
+.App .settings .option {
+  border-bottom: 1px dashed #a0a0a057;
+  margin-bottom: .5rem;
+  height: 2em;
+}
+
+.App .recommended-action .good, .App .recommended-action .bad {
+  font-weight: bold;
+  font-family: cursive;
+  line-height: 1;
+}
+
+.App .react-calendar {
+  font-size: 15px;
+}
+
+.App .react-calendar__tile {
+  min-height: 3.75rem;
+}
+
+.App .settings .info-icon {
+  padding: .1rem 0.2rem;
+  font-size: 14px;
+  line-height: 9px;
+  margin: 0 5px;
+  padding-bottom: 4px;
+}
+
+.withLunarDay .react-calendar__month-view__weekNumbers .react-calendar__tile {
+  height: 4.75em
+}
+
+.App .bottom {
+  display: flex;
+  justify-content: space-between;
+  background: #eee;
+  height: 2rem;
+  line-height: 2rem;
+}
+
+.App .bottom .action-icon {
+  font-size: 16px;
+  padding: 0 0.5em;
+  min-width: 44px;
+  outline: none;
+}
+
+.App .react-calendar__tile--active, .App .react-calendar__tile--active.react-calendar__tile--now {
+  background: #006edc;
+  color: #fff;
+}
+
+.App .react-calendar__tile--now {
+  background: #c0f8ff8a;
+}
+
+.App .react-calendar__tile--now:enabled:hover, .App .react-calendar__tile--now:enabled:focus{
+  background: #2177cedb;
+  color: #fff;
+}
+
+.App .mark.yearly{
+  position: absolute;
+    left: 50%;
+    bottom: 9px;
+    width: 50%;
+    text-align: center;
+    margin-left: -25%;
+}
+
+.App .mark.yearly:after {
+  content: "";
+  display: inline-block;
+  width: 50%;
+  height: 0px;
+  border: 1px solid #FF9800;
+}
+
+.App .mark-item .yearly{
+  color: #FF9800;
+}
+
+.App .mark.monthly{
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  margin-left: -2px;
+}
+
+.speech-bubble {
+	position: relative;
+	border-radius: .4em;
+}
+
+.speech-bubble:after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	width: 0;
+	height: 0;
+	border: 6px solid transparent;
+	border-top-color: #000000a3;
+	border-bottom: 0;
+	margin-left: -6px;
+	margin-bottom: -6px;
+}
+
+.App .mark-item .monthly{
+  color: #4CAF50;
+}
+
+.App .mark.monthly:after {
+  content: "";
+  display: block;
+  width: 4px;
+  height: 4px;
+  background: #4CAF50;
+  border-radius: 8px;
+}
+
+.App .date-item .mark-detail{
+  display: none;
+}
+
+.App .date-item .date-name {
+  padding-top: 2px;
+}
+
+.App input::placeholder {
+  color: #ccc;
+}
+
+.App .react-calendar__month-view__days__day:hover .mark-detail {
+  position: absolute;
+  left: 50%;
+  top: -3.5em;
+  display: block;
+  margin-left: -4em;
+  width: 8em;
+  height: 4em;
+  padding: .5em;
+  color: #fff;
+  background: #000000a3;
+  font-size: 12px;
+}
+
+.big-date {
+  font-weight: bold;
+  background: #cccccc1c;
+}
+
+.App .imageBackground {
+  color: #fff;
+  text-shadow: 1px 1px 2px #6d6d6dbf;
+}
+
+.imageBackground .detail {
+  background: #0000003d;
+  color: #fff;
+}
+
+.imageBackground .big-date{
+  color: #fff;
+  text-shadow: 1px 1px 2px #6d6d6dbf;
+  background: none
+}
+
+.imageBackground .UUI-TextArea-Root .UUI-TextArea-Textarea, .App .imageBackground .UUI-Button-Root {
+  background: #ffffff9c;
+  color: #333;
+}
+
+.imageBackground .recommended-action .good {
+  color: #d8ffea;
+}
+
+.imageBackground .recommended-action .bad {
+  color: #ffcece;
+}
+
+.big-date .workday{
+  color: #888;
+}
+
+.App .react-calendar__month-view__days__day--weekend {
+  color: #03A9F4;
+}
+
+.App .react-calendar__tile--active.react-calendar__month-view__days__day--weekend {
+  color: #a6e8f1;
+}
+
+.App .react-calendar__month-view__days__day--neighboringMonth.react-calendar__month-view__days__day--weekend {
+  color: #29bafbba;
+}
+
+.App .react-calendar__tile.react-calendar__month-view__days__day {
+  position: relative;
+  overflow: unset !important;
+}
+
+.App .react-calendar__navigation {
+  margin-bottom: .5em;
+}
+
+.App .react-calendar__viewContainer {
+  padding: .5em;
+}
+
+.App .special-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 12px;
+  background: #FF9800;
+  color: #fff;
+  padding: 1px;
+}
+
+.App .bottom .center-card {
+  background: #cccccc2e;
+  border-radius: 26px;
+  height: 1.5rem;
+  padding: 0em 1em;
+  line-height: 1.5rem;
+  text-decoration-line: none;
+  color: #4a4a4a;
+}
+
+.dark-mode .App .bottom .center-card{
+  color: #888;
+}
+
+.App .special-tag.public-workday {
+  background-color: #29425d;
+}
+
+.App .react-calendar__month-view__weekNumbers span {
+  background: #eee;
+  padding: .2em;
+  border-radius: 12px;
+}
+
+
+.App .close-icon {
+  font-size: 20px;
+  line-height: 14px;
+}
+
+.react-calendar--doubleView{
+  width: 800px;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer > * {
+  margin: 0;
+}
+
+.date-detail .corner{
+  cursor: pointer;
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-width: 0 16px 16px 0;
+  border-style: solid;
+  border-color: #fff0 #b2b2b2 #c0c0c094 #c0c0c094;
+  background: #c0c0c024;
+  display: block;
+  width: 0;
+  transform: rotate(90deg);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), -1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .date-detail .corner {
+  border-color: #fff0 #121111 #c0c0c094 #c0c0c094;
+}
+
+.dark-mode .App .bottom {
+  background: #00000047;;
+}
+
+.dark-mode .UUI-TextArea-Root .UUI-TextArea-Textarea{
+  background: #3c3c3cd4;
+  color: #fff;
+}
+
+.dark-mode .UUI-TextArea-Root:focus-within{
+  box-shadow: none;
+}
+
+.dark-mode .UUI-Button-Root {
+  color: #fff;
+  background: transparent;
+}
+
+.dark-mode .UUI-HTMLSelect-Root .UUI-HTMLSelect-Select {
+  background: transparent;
+  color: #eee;
+}
+
+.dark-mode .UUI-Switch-Root .UUI-Switch-Button{
+  background-color: #656565b5;
+}
+
+.UUI-HTMLSelect-Root{
+  padding: 0;
+  border: 0;
+  line-height: 2;
+}
+
+.UUI-HTMLSelect-Root .UUI-HTMLSelect-Select{
+  height: 2em;
+  line-height: 2;
+  padding: 0;
+}
+
+.dark-mode .UUI-Switch-Root.STATE_checked .UUI-Switch-Button{
+  background: #0c9011;
+}
+
+.dark-mode .UUI-Switch-Root .UUI-Switch-Thumb {
+  background-color: #a9a9a9;
+}
+
+.dark-mode .UUI-Dialog-Container {
+  background: #333;
+}
+
+.dark-mode .UUI-Drawer-Portal .UUI-Drawer-Content {
+  background-color: #333;
+  box-shadow: none;
+}
+
+.dark-mode .App .settings .option {
+  border-bottom: 1px dashed #eeeeee57;
+}
+
+.dark-mode .App .react-calendar {
+  background-color: transparent;
+}
+
+.dark-mode .App .react-calendar__tile:enabled:hover {
+  background-color: #04508c;
+}
+
+.dark-mode .App .react-calendar__tile--active.react-calendar__tile--now:hover {
+  background-color: #006edc;
+}
+
+
+.dark-mode .App .react-calendar__navigation button:enabled:focus {
+  background-color: #2f2f2f;
+}
+
+.dark-mode .react-calendar__navigation button:enabled:hover {
+  background-color: #e6e6e621;
+}
+
+.dark-mode .App .react-calendar__month-view__weekNumbers span {
+  background: #000000;
+  color: #888;
+}
+
+.dark-mode .react-calendar__tile--hasActive {
+  background: #29425d;
+}
+
+.dark-mode .react-calendar__tile--now {
+  background: #044867d6;
+}
+
+.dark-mode .react-calendar__month-view__weekNumbers {
+  color: #656565;
+}
+
+.dark-mode .App .uui-switch {
+  background-color: rgba(193, 193, 193, 0.25);
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* purgecss end ignore */

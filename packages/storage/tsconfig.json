@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": ["es2020"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": false,
+    "baseUrl": ".",
+    "paths": {
+      "@daylight/domain": ["../domain/src/index.ts"],
+      "@daylight/core-calendar": ["../core-calendar/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

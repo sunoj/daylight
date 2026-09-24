@@ -1,0 +1,33 @@
+{
+  "bundleId": "com.mings.daylight",
+  "sku": "daylight-macos-personal",
+  "platform": "MAC_OS",
+  "version": "2.0.1",
+  "build": "1",
+  "primaryLocale": "en-US",
+  "price": "Free",
+  "primaryCategory": "PRODUCTIVITY",
+  "secondaryCategory": "UTILITIES",
+  "copyright": "2026 Ming Sun",
+  "privacyPolicyUrl": "https://daylight.mings.work/privacy",
+  "supportUrl": "https://daylight.mings.work/support",
+  "marketingUrl": "https://daylight.mings.work",
+  "localizations": {
+    "en-US": {
+      "name": "Daylight - Menu Bar Calendar",
+      "subtitle": "Lunar dates, moon & diary",
+      "keywords": "notes,todo,holidays,solar terms,date,week,schedule,planner,seasons,reminder,productivity",
+      "description": "A little calendar for a clearer day. Daylight puts your calendar, moon phase and daily notes in your Mac menu bar.\n\nYOUR DAY AT A GLANCE\nOpen a compact month calendar, select a date, and see its details without leaving your work. Choose between the Luna and Sol layouts, with light and dark appearances.\n\nFOLLOW THE MOON AND SEASONS\nShow lunar dates and the 24 solar terms, each with a hand-drawn botanical icon. Today's circular background follows the moon phase. Explore a simple moon summary or the 3D moon view.\n\nKEEP YOUR PLANS CLOSE\nRead events from your system calendars with your permission. Subscribe to public holiday calendars and choose which sources appear. Week numbers and different week-start rules help you navigate dates.\n\nA SMALL SPACE FOR YOUR THOUGHTS\nWrite notes and todos for each day. Your diary stays on your Mac, and you can export it as JSON.\n\nMADE FOR YOUR MENU BAR\nCustomize the status item, enable launch at login, and choose English, Simplified Chinese or Thai.\n\nPRIVATE BY DESIGN\nNo account, ads or analytics. Calendar access and location are optional. Location is used on your device for the 3D moon view; your diary and calendar events are not uploaded. Public holiday subscriptions download directly from their sources.\n\nFree to use. Requires macOS 13 or later.",
+      "promotionalText": "A quiet home for dates, lunar seasons, the moon and daily notes — right in your Mac menu bar."
+    },
+    "zh-Hans": {
+      "name": "昼间 Daylight - 菜单栏日历",
+      "subtitle": "农历节气、月相与每日随记",
+      "keywords": "日历,菜单栏,农历,节气,月相,日记,待办,节假日,日期,周数,calendar,moon",
+      "description": "小小日历，让每一天更清晰。昼间把日历、月相和每日随记放进 Mac 菜单栏，随时轻松查看。\n\n今天，一眼就知道\n打开简洁的月历，选择日期并查看当天详情。Luna 与 Sol 两种界面，支持浅色与深色外观。\n\n跟随月亮与四季\n按需显示农历和二十四节气，搭配细腻的植物线描节气图标。今天的圆形背景跟随当天月相变化，还可以查看简洁月相详情或探索 3D 月球。\n\n把安排放在手边\n经你允许后读取系统日历中的日程。订阅公共节假日日历，自选显示来源，支持周数和不同的每周起始规则。\n\n为每天留一点记录\n按日期写下想法和待办事项。日记保存在本机，也可以导出为 JSON。\n\n为菜单栏而设计\n自定义状态栏样式，支持开机启动，提供简体中文、英语和泰语界面。\n\n隐私优先\n无需账号，没有广告或使用分析。系统日历和定位权限均为可选；定位仅用于本机计算 3D 月相，日记和日程不会上传。节假日订阅直接从对应来源下载。\n\n免费使用。需要 macOS 13 或更新版本。",
+      "promotionalText": "农历、节气、月相与日记，在菜单栏里陪你过好每一天。"
+    }
+  },
+  "reviewNotes": "Daylight is a menu bar utility (LSUIElement). After launch, click the date/moon item in the macOS menu bar; there is no Dock window. No account or sign-in is required. Open Settings using the gear icon. Lunar dates are optional and can be enabled there for each layout. System calendar access is optional and read-only in the app. Location access is optional and used only for the 3D moon view. Notes and settings stay locally on the Mac. The Mac App Store build has App Sandbox enabled and contains no Sparkle updater or external update flow. Test diary export from Settings > Export diary.",
+  "appId": "6815507768"
+}

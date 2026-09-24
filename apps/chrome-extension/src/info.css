@@ -1,0 +1,118 @@
+.info-panel {
+  padding: 12px 0 16px;
+  background: var(--surface);
+}
+.shortcut-help {
+  padding: 12px 16px 16px;
+  background: var(--surface);
+}
+
+.info-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.info-tab {
+  flex: 0 1 auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: var(--ink-2);
+  font-size: 10.5px;
+  line-height: 1.3;
+  text-align: center;
+  white-space: nowrap;
+}
+.info-tab.active {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--surface);
+}
+.info-content {
+  min-height: 160px;
+}
+.info-body,
+.info-faq,
+.info-changelog {
+  display: grid;
+  gap: 8px;
+  max-height: 180px;
+  overflow: auto;
+  color: var(--ink-2);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.info-paragraph {
+  color: var(--ink);
+}
+.info-meta-list {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 6px 8px;
+  margin: 0;
+}
+.info-meta-label,
+.info-meta-value {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+.info-meta-label {
+  color: var(--ink-3);
+}
+.info-meta-value {
+  color: var(--ink-2);
+  text-align: right;
+  word-break: break-word;
+}
+.info-faq-a {
+  color: var(--ink-2);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.info-changelog-detail {
+  color: var(--ink-2);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.info-faq-item {
+  display: grid;
+  gap: 4px;
+}
+.info-faq-q {
+  color: var(--ink);
+  font-weight: 600;
+}
+.info-changelog-entry {
+  display: grid;
+  gap: 4px;
+}
+.info-changelog-head {
+  color: var(--ink);
+  font-weight: 600;
+}
+.shortcut-list {
+  display: grid;
+  gap: 6px;
+}
+.shortcut-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--ink-2);
+  font-size: 11.5px;
+}
+.shortcut-keys {
+  display: flex;
+  gap: 4px;
+}
+.shortcut-key {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 2px 6px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+}

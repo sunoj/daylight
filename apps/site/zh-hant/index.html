@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="晝間 Daylight — macOS 選單列日曆與瀏覽器擴充功能。本機計算農曆與節氣，只讀同步系統日曆。">
+  <title>晝間日曆 Daylight</title>
+  <link rel="alternate" hreflang="en" href="/">
+  <link rel="alternate" hreflang="zh-Hans" href="/zh/">
+  <link rel="alternate" hreflang="zh-Hant" href="/zh-hant/">
+  <link rel="alternate" hreflang="th" href="/th/">
+  <link rel="alternate" hreflang="x-default" href="/">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css?v=20260924c">
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要內容</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="#top" aria-label="晝間日曆 Daylight，返回頂部">
+        <svg class="brand__icon" viewBox="0 0 1024 1024" aria-hidden="true">
+          <rect width="1024" height="1024" rx="229" ry="229" fill="#1B1B1A"/>
+          <svg x="208" y="208" width="608" height="608" viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="15.2" fill="#F6F5F3"/>
+            <path d="M16,0 A16 16 0 0 1 16 32 A 8 16 0 0 1 16 0 Z" fill="#1B1B1A"/>
+          </svg>
+        </svg>
+        <span class="brand__name">晝間日曆</span>
+      </a>
+      <div class="site-header__end">
+        <nav class="site-nav" aria-label="頁面導航">
+          <a href="#clients">應用程式</a>
+          <a href="#features">功能</a>
+          <a href="#download">獲取</a>
+        </nav>
+        <nav class="lang-switch" aria-label="語言">
+          <a href="../" hreflang="en">EN</a>
+          <a href="../zh/" hreflang="zh-Hans">簡</a>
+          <a href="./" hreflang="zh-Hant" aria-current="true">繁</a>
+          <a href="../th/" hreflang="th">ไทย</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <p class="hero__eyebrow">Calendar · Local first</p>
+          <h1 class="hero__title">在選單列裡，<br>把日子看清楚。</h1>
+          <p class="hero__lead">
+            在 Mac 選單列或瀏覽器裡，隨時查看日曆。
+            農曆、節氣、月相均在本機計算；系統日曆只讀同步，位置資訊僅用於月相，從不上傳。
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--secondary" href="#download">安裝瀏覽器擴充功能</a>
+            <a class="btn btn--primary" href="https://daylight.mings.work/daylight-macos.dmg">
+              下載 macOS 版
+              <span class="btn__hint">macOS 13+</span>
+            </a>
+          </div>
+          <p class="hero__meta">macOS 13+ · 繁體中文 / 簡體中文 / English / ไทย · GPL-2.0</p>
+        </div>
+
+        <div class="hero__visual">
+          <div class="hero__mac">
+            <div class="hero__menubar" aria-label="Mac 選單列中的晝間月相圖示">
+              <span class="hero__status-item"><img class="hero__status-moon" src="/images/status-moon.png" alt="" width="18" height="18"></span>
+              <span class="hero__clock">9月24日 週四</span>
+            </div>
+            <div class="hero__popover">
+              <img class="hero__screenshot" src="/images/calendar-zh-hant.png" alt="晝間 2.0.3：Luna 日曆中的農曆、節假日、調休標記、月相、節氣圖示和每日隨記。" width="300" fetchpriority="high">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--surface" id="clients">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">Clients</p>
+          <h2 class="section__title">在 Mac 和瀏覽器裡，隨手查看日曆</h2>
+          <p class="section__lead">無論在桌面工作還是瀏覽網頁，都能方便地查看日期、安排和筆記。</p>
+        </header>
+
+        <div class="cards cards--two">
+          <article class="card">
+            <span class="card__badge">v2.0.3 · macOS 13+</span>
+            <h3 class="card__title">macOS 選單列應用程式</h3>
+            <p class="card__text">點選選單列圖示，就能查看日期和接下來的安排。支援查看 Mac 日曆中已有的 iCloud、Google、Exchange 等行程，點選即可在系統日曆中打開。</p>
+            <ul class="card__list">
+              <li>兩種佈局：Luna 方便查看當天安排，Sol 提供更寬敞的日曆</li>
+              <li>訂閱節假日日曆，也可新增自己的日曆連結</li>
+              <li>3D 月相模型，位置僅在本機使用</li>
+              <li>日記與待辦：輸入 <code>[] 買牛奶</code> 生成可勾選待辦，支援匯出 JSON</li>
+              <li>可自訂選單列顯示項，支援登入時啟動</li>
+              <li>網站下載版支援自動更新</li>
+            </ul>
+            <div class="card__actions">
+              <a class="btn btn--primary" href="https://daylight.mings.work/daylight-macos.dmg">下載 macOS 版</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <span class="card__badge">Chrome · Edge</span>
+            <h3 class="card__title">瀏覽器擴充功能</h3>
+            <p class="card__text">已在 Chrome Web Store 與 Microsoft Edge Add-ons 發佈。工具欄月相圖示、深色模式、在裝置上計算的農曆與節氣、日期標記與日記。</p>
+            <ul class="card__list">
+              <li>農曆與二十四節氣，本機計算</li>
+              <li>深色模式</li>
+              <li>日期標記與日記</li>
+              <li>節假日日曆訂閱</li>
+              <li>資訊頁與鍵盤快捷鍵</li>
+              <li>工具欄月相圖示</li>
+            </ul>
+            <div class="card__actions">
+              <a class="btn btn--primary" href="https://chrome.google.com/webstore/detail/%E6%98%BC%E9%97%B4%E6%97%A5%E5%8E%86/fdpfnfidhlijopfejncgamefcoemjboe?hl=zh-CN" rel="noopener">Chrome 安裝</a>
+              <a class="btn btn--secondary" href="https://microsoftedge.microsoft.com/addons/detail/%E6%98%BC%E9%97%B4%E6%97%A5%E5%8E%86/dleejdlchigadggmnpaiagaejagmakpg" rel="noopener">Edge 安裝</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="modes">
+          <article class="mode">
+            <span class="mode__label">Luna · 預設</span>
+            <h3 class="mode__title">一天安排，一眼看清</h3>
+            <p class="mode__text">隨手打開小巧的日曆，選取一天，就能一起查看行程、日記和待辦，旁邊還有當天月相。彩色圓點標出有安排的日子。</p>
+          </article>
+          <article class="mode">
+            <span class="mode__label">Sol</span>
+            <h3 class="mode__title">更寬敞，方便查日期</h3>
+            <p class="mode__text">在更寬敞的日曆中查看農曆、節氣和週數，瞭解當天月相，隨手寫下日記。點選頂部標題，還能快速跳轉到其他月份或年份。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">Features</p>
+          <h2 class="section__title">功能概覽</h2>
+          <p class="section__lead">查日期、看安排，也記下每天值得留住的小事。</p>
+        </header>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <h3 class="feature__title">農曆與節氣</h3>
+            <p class="feature__text">農曆與二十四節氣在本機計算。全新植物線描圖示採用三種柔和顏色，Mac 使用小圖示，瀏覽器詳情展示精細大圖示；圖示隨農曆開關顯示。</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">系統日曆同步</h3>
+            <p class="feature__text">直接查看 Mac 日曆中已有的行程，不會修改原有安排。有行程的日期會顯示彩色圓點，選取日期即可查看當天安排和視訊會議連結。</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">節假日與調休</h3>
+            <p class="feature__text">訂閱中國大陸、中國香港和泰國節假日，也可新增自己的 iCal 日曆。大陸調休補班日明確標註「班」，關閉農曆仍可查看；各訂閱可設定獨立顏色。</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">月相</h3>
+            <p class="feature__text">查看任意日期的月相。Luna 中今天的圓形背景隨月相變化，淺色模式採用溫暖的淡黃色。還可探索 3D 月球，位置僅在本機用於計算，從不上傳。</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">日記與待辦</h3>
+            <p class="feature__text">macOS 應用程式支援每日自由文字日記；輸入 <code>[] 買牛奶</code>（或 <code>[ ]</code> / <code>[x]</code>）建立附核取方塊的待辦，完成後自動劃掉，可匯出 JSON。</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">標記與日記</h3>
+            <p class="feature__text">瀏覽器擴充功能可為單日新增彩色標記與日記內容。</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">選單列與語言</h3>
+            <p class="feature__text">選單列項可自訂：月相圖示、日期徽章、日號、農曆日、星期、時間，順序可調。介面語言：繁體中文、簡體中文、English、ไทย（泰語顯示佛曆）。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--surface" id="download">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">Get Daylight</p>
+          <h2 class="section__title">獲取晝間</h2>
+          <p class="section__lead">Mac、Chrome 與 Edge 均可免費使用。下方可下載 macOS 2.0.3 新版。</p>
+        </header>
+
+        <div class="cards cards--two">
+          <article class="card">
+            <h3 class="card__title">瀏覽器擴充功能</h3>
+            <p class="card__text">適用於 Chrome 與 Microsoft Edge。</p>
+            <div class="card__actions">
+              <a class="btn btn--primary" href="https://chrome.google.com/webstore/detail/%E6%98%BC%E9%97%B4%E6%97%A5%E5%8E%86/fdpfnfidhlijopfejncgamefcoemjboe?hl=zh-CN" rel="noopener">Chrome Web Store</a>
+              <a class="btn btn--secondary" href="https://microsoftedge.microsoft.com/addons/detail/%E6%98%BC%E9%97%B4%E6%97%A5%E5%8E%86/dleejdlchigadggmnpaiagaejagmakpg" rel="noopener">Edge Add-ons</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3 class="card__title">macOS 選單列應用程式</h3>
+            <p class="card__text">2.0.3 版 · 需要 macOS 13 或更高版本 · 支援 Apple 晶片與 Intel。已簽名並透過 Apple 公證，支援自動更新。</p>
+            <div class="card__actions">
+              <a class="btn btn--primary" id="mac-download" href="https://daylight.mings.work/daylight-macos.dmg">下載 macOS 版</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__grid">
+      <div>
+        <div class="site-footer__brand">
+          <svg class="site-footer__icon" viewBox="0 0 1024 1024" aria-hidden="true">
+            <rect width="1024" height="1024" rx="229" ry="229" fill="#1B1B1A"/>
+            <svg x="208" y="208" width="608" height="608" viewBox="0 0 32 32">
+              <circle cx="16" cy="16" r="15.2" fill="#F6F5F3"/>
+              <path d="M16,0 A16 16 0 0 1 16 32 A 8 16 0 0 1 16 0 Z" fill="#1B1B1A"/>
+            </svg>
+          </svg>
+          <span class="site-footer__name">晝間 Daylight</span>
+        </div>
+        <p class="site-footer__copy">本機計算的日曆 — 農曆、節氣、月相與行程，留在你的裝置上。</p>
+        <p class="site-footer__legal">Licence GPL-2.0</p>
+      </div>
+      <div class="site-footer__contact">
+        <nav class="lang-switch" aria-label="語言">
+          <a href="../" hreflang="en">EN</a>
+          <a href="../zh/" hreflang="zh-Hans">簡</a>
+          <a href="./" hreflang="zh-Hant" aria-current="true">繁</a>
+          <a href="../th/" hreflang="th">ไทย</a>
+        </nav>
+        <p><a href="https://github.com/sunoj/daylight" rel="noopener">GitHub</a></p>
+        <p><a href="mailto:hi@mings.work">hi@mings.work</a></p>
+        <p><a href="/zh-hant/support">支援</a></p>
+        <p><a href="/zh-hant/privacy">隱私</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      var sections = document.querySelectorAll(".section");
+      // Only opt into the hidden start state once something can undo it: with
+      // the class set and no observer, every section would stay invisible.
+      if (!sections.length || !("IntersectionObserver" in window)) return;
+      document.documentElement.classList.add("js-reveal");
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -5% 0px" });
+      sections.forEach(function (section) {
+        observer.observe(section);
+      });
+    })();
+  </script>
+</body>
+</html>

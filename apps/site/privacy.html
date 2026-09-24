@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Daylight collects nothing. What the calendar stores, where it stores it, and the only requests it makes.">
+  <title>Privacy — Daylight</title>
+  <link rel="alternate" hreflang="en" href="/privacy">
+  <link rel="alternate" hreflang="zh-Hans" href="/zh/privacy">
+  <link rel="alternate" hreflang="zh-Hant" href="/zh-hant/privacy">
+  <link rel="alternate" hreflang="th" href="/th/privacy">
+  <link rel="alternate" hreflang="x-default" href="/privacy">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=20260924c">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="/" aria-label="Daylight, home">
+        <svg class="brand__icon" viewBox="0 0 1024 1024" aria-hidden="true">
+          <rect width="1024" height="1024" rx="229" ry="229" fill="#1B1B1A"/>
+          <svg x="208" y="208" width="608" height="608" viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="15.2" fill="#F6F5F3"/>
+            <path d="M16,0 A16 16 0 0 1 16 32 A 8 16 0 0 1 16 0 Z" fill="#1B1B1A"/>
+          </svg>
+        </svg>
+        <span class="brand__name">Daylight</span>
+      </a>
+      <div class="site-header__end">
+        <nav class="site-nav" aria-label="Page navigation">
+          <a href="/#clients">Clients</a>
+          <a href="/#features">Features</a>
+          <a href="/#download">Get</a>
+        </nav>
+        <nav class="lang-switch" aria-label="Language">
+          <a href="/privacy" hreflang="en" aria-current="true">EN</a>
+          <a href="/zh/privacy" hreflang="zh-Hans">简</a>
+          <a href="/zh-hant/privacy" hreflang="zh-Hant">繁</a>
+          <a href="/th/privacy" hreflang="th">ไทย</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="section">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">Privacy</p>
+          <h1 class="section__title">Daylight collects nothing</h1>
+          <p class="section__lead">There is no account, no analytics, and no server of ours that receives what you write. This page says exactly what is stored, where, and what leaves your device.</p>
+        </header>
+        <p class="prose__updated">Last updated 2026-09-24</p>
+        <div class="prose">
+<h2>The short version</h2>
+<p>Daylight does not collect anything. Nothing you write in it is sent to us, because there is nowhere for it to be sent — we run no server that receives user data.</p>
+
+<h2>What is stored, and where</h2>
+<p>Everything Daylight keeps lives on your own device, or in your own browser or Apple account.</p>
+<p><strong>Browser extension.</strong> Your settings — interface language, colour scheme, calendar type, whether lunar dates and week numbers are shown, and which holiday calendars you subscribed to — are stored with your browser's own extension sync. If you have browser profile sync turned on they follow your profile; that is your browser's service, not ours. Your date marks, diary entries and todos are stored locally on that device only, and are never synced. Downloaded holiday dates are cached locally so the calendar works offline.</p>
+<p><strong>macOS app.</strong> Settings, diary entries and todos are stored in the app's own storage on your Mac. If you turn on system calendar integration, the app reads your calendars through Apple's EventKit to show your events — it only ever reads, and never writes to, uploads, or copies them. If you open the 3D moon view, your location is used on-device to compute where the moon sits in your sky; it is never uploaded or stored.</p>
+
+<h2>What leaves your device</h2>
+<p>Public holiday downloads are made for the regions you subscribe to:</p>
+<ul>
+<li><code>holidays.mings.work</code> — our own feed of mainland China statutory holidays</li>
+<li><code>www.1823.gov.hk</code> — the Hong Kong SAR government's official calendar</li>
+<li><code>www.officeholidays.com</code> — Thailand public holidays</li>
+<li>any iCal address you paste in yourself</li>
+</ul>
+<p>The website edition of the macOS app also requests update information and installers from <code>daylight.mings.work</code>. The Mac App Store edition receives updates through Apple and does not include the website updater. These requests do not upload your diary, system calendar events, or location.</p>
+<p>These are ordinary downloads. Nothing about you is included beyond what any web request necessarily reveals to the site being contacted — your IP address, and the fact that a request was made. The third-party sources above are contacted directly by your device; we neither see nor log those requests.</p>
+<p>Lunar dates, the 24 solar terms and moon phases are computed on your device and involve no network request at all.</p>
+
+<h2>What Daylight does not do</h2>
+<ul>
+<li>No analytics, no telemetry, no crash or error reporting</li>
+<li>No advertising, and no advertising or tracking SDKs</li>
+<li>No accounts, no sign-in, no user identifiers</li>
+<li>No selling or sharing of data, because none is collected</li>
+<li>No remotely-loaded code — everything that runs ships inside the package</li>
+</ul>
+
+<h2>Removing your data</h2>
+<p>Uninstalling the extension removes everything it stored in your browser. Deleting the macOS app and its data removes everything it stored on your Mac. You can also delete individual diary entries and marks inside either client at any time, and the macOS app can export your diary as JSON if you want a copy first.</p>
+
+<h2>Children</h2>
+<p>Daylight is a calendar. It collects nothing from anyone, including children.</p>
+
+<h2>Changes</h2>
+<p>If this policy changes, the date at the top changes with it.</p>
+
+<h2>Contact</h2>
+<p><a href="mailto:hi@mings.work">hi@mings.work</a></p>
+<p>Daylight is open source under GPL-2.0, so any claim on this page can be checked against the source rather than taken on trust.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__grid">
+      <div>
+        <div class="site-footer__brand">
+          <svg class="site-footer__icon" viewBox="0 0 1024 1024" aria-hidden="true">
+          <rect width="1024" height="1024" rx="229" ry="229" fill="#1B1B1A"/>
+          <svg x="208" y="208" width="608" height="608" viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="15.2" fill="#F6F5F3"/>
+            <path d="M16,0 A16 16 0 0 1 16 32 A 8 16 0 0 1 16 0 Z" fill="#1B1B1A"/>
+          </svg>
+        </svg>
+          <span class="site-footer__name">Daylight</span>
+        </div>
+        <p class="site-footer__copy">Calendar computed on-device — lunar dates, solar terms, moon phases, and your schedule stay on your device.</p>
+        <p class="site-footer__legal">Licence GPL-2.0</p>
+      </div>
+      <div class="site-footer__contact">
+        <nav class="lang-switch" aria-label="Language">
+          <a href="/privacy" hreflang="en" aria-current="true">EN</a>
+          <a href="/zh/privacy" hreflang="zh-Hans">简</a>
+          <a href="/zh-hant/privacy" hreflang="zh-Hant">繁</a>
+          <a href="/th/privacy" hreflang="th">ไทย</a>
+        </nav>
+        <p><a href="https://github.com/sunoj/daylight" rel="noopener">GitHub</a></p>
+        <p><a href="mailto:hi@mings.work">hi@mings.work</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

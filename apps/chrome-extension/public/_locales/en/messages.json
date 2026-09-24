@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "Daylight Calendar",
+    "description": "Extension name shown in the browser and on the store listing."
+  },
+  "appShortName": {
+    "message": "Daylight",
+    "description": "Short name shown under the toolbar icon."
+  },
+  "appDescription": {
+    "message": "A calendar extension for lunar dates, 24 solar terms, public holidays, and moon phases.",
+    "description": "Store listing description."
+  }
+}

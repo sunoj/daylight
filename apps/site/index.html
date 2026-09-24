@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Daylight — macOS menu bar calendar and browser extension. Lunar dates and solar terms computed on-device; read-only system calendar sync.">
+  <title>Daylight</title>
+  <link rel="alternate" hreflang="en" href="/">
+  <link rel="alternate" hreflang="zh-Hans" href="/zh/">
+  <link rel="alternate" hreflang="zh-Hant" href="/zh-hant/">
+  <link rel="alternate" hreflang="th" href="/th/">
+  <link rel="alternate" hreflang="x-default" href="/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=20260924c">
+
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="#top" aria-label="Daylight, back to top">
+        <svg class="brand__icon" viewBox="0 0 1024 1024" aria-hidden="true">
+          <rect width="1024" height="1024" rx="229" ry="229" fill="#1B1B1A"/>
+          <svg x="208" y="208" width="608" height="608" viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="15.2" fill="#F6F5F3"/>
+            <path d="M16,0 A16 16 0 0 1 16 32 A 8 16 0 0 1 16 0 Z" fill="#1B1B1A"/>
+          </svg>
+        </svg>
+        <span class="brand__name">Daylight</span>
+      </a>
+      <div class="site-header__end">
+        <nav class="site-nav" aria-label="Page navigation">
+          <a href="#clients">Clients</a>
+          <a href="#features">Features</a>
+          <a href="#download">Get</a>
+        </nav>
+        <nav class="lang-switch" aria-label="Language">
+          <a href="./" hreflang="en" aria-current="true">EN</a>
+          <a href="zh/" hreflang="zh-Hans">简</a>
+          <a href="zh-hant/" hreflang="zh-Hant">繁</a>
+          <a href="th/" hreflang="th">ไทย</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <p class="hero__eyebrow">Calendar · Local first</p>
+          <h1 class="hero__title">See your days clearly,<br>right from the menu bar.</h1>
+          <p class="hero__lead">
+            Check your calendar from the Mac menu bar or your browser.
+            Lunar dates, solar terms, and moon phases are computed on your device; system calendars sync read-only, and location is used for moon phase only — never uploaded.
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--secondary" href="#download">Install browser extension</a>
+            <a class="btn btn--primary" href="https://daylight.mings.work/daylight-macos.dmg">
+              Download for macOS
+              <span class="btn__hint">macOS 13+</span>
+            </a>
+          </div>
+          <p class="hero__meta">macOS 13+ · 简体中文 / 繁體中文 / English / ไทย · GPL-2.0</p>
+        </div>
+
+        <div class="hero__visual">
+          <div class="hero__mac">
+            <div class="hero__menubar" aria-label="Daylight moon phase in the Mac menu bar">
+              <span class="hero__status-item"><img class="hero__status-moon" src="/images/status-moon.png" alt="" width="18" height="18"></span>
+              <span class="hero__clock">Thu Sep 24</span>
+            </div>
+            <div class="hero__popover">
+              <img class="hero__screenshot" src="/images/calendar-en.png" alt="Daylight 2.0.3: Luna calendar with lunar dates, holidays, adjusted workdays, moon phase, solar-term artwork, and a daily note." width="300" fetchpriority="high">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--surface" id="clients">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">Clients</p>
+          <h2 class="section__title">Your calendar, on Mac and in your browser</h2>
+          <p class="section__lead">Menu bar and browser each do what they do best; lunar dates, solar terms, and your notes stay on-device — no cloud required.</p>
+        </header>
+
+        <div class="cards cards--two">
+          <article class="card">
+            <span class="card__badge">v2.0.3 · macOS 13+</span>
+            <h3 class="card__title">macOS menu bar app</h3>
+            <p class="card__text">Click the menu bar icon to check dates and upcoming events. See calendars you already use on your Mac, including iCloud, Google, and Exchange. Click an event to open it in Calendar.</p>
+            <ul class="card__list">
+              <li>Choose Luna for a quick daily view or Sol for a more spacious calendar</li>
+              <li>Subscribe to holiday calendars or add your own calendar links</li>
+              <li>3D Moon model; location stays on-device</li>
+              <li>Diary with todo items; type <code>[] buy milk</code> for checkable todos; export as JSON</li>
+              <li>Customizable menu bar display items; launch at login</li>
+              <li>Automatic updates for the direct-download edition</li>
+            </ul>
+            <div class="card__actions">
+              <a class="btn btn--primary" href="https://daylight.mings.work/daylight-macos.dmg">Download for macOS</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <span class="card__badge">Chrome · Edge</span>
+            <h3 class="card__title">Browser extension</h3>
+            <p class="card__text">Available on Chrome Web Store and Microsoft Edge Add-ons. Toolbar moon icon, dark mode, on-device lunar dates and 24 solar terms, date marks and diary.</p>
+            <ul class="card__list">
+              <li>Lunar date and 24 solar terms, computed on-device</li>
+              <li>Dark mode</li>
+              <li>Date marks and diary</li>
+              <li>Holiday calendar subscriptions</li>
+              <li>Info screen and keyboard shortcuts</li>
+              <li>Toolbar moon icon</li>
+            </ul>
+            <div class="card__actions">
+              <a class="btn btn--primary" href="https://chrome.google.com/webstore/detail/%E6%98%BC%E9%97%B4%E6%97%A5%E5%8E%86/fdpfnfidhlijopfejncgamefcoemjboe?hl=en" rel="noopener">Chrome Web Store</a>
+              <a class="btn btn--secondary" href="https://microsoftedge.microsoft.com/addons/detail/%E6%98%BC%E9%97%B4%E6%97%A5%E5%8E%86/dleejdlchigadggmnpaiagaejagmakpg" rel="noopener">Edge Add-ons</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="modes">
+          <article class="mode">
+            <span class="mode__label">Luna · default</span>
+            <h3 class="mode__title">Your day at a glance</h3>
+            <p class="mode__text">Open a small calendar whenever you need it. Select a day to see your events, notes, and todos together, with the moon phase close at hand. Colored dots make busy days easy to spot.</p>
+          </article>
+          <article class="mode">
+            <span class="mode__label">Sol</span>
+            <h3 class="mode__title">More room to explore</h3>
+            <p class="mode__text">Browse a larger calendar with lunar dates, solar terms, and week numbers. Check the moon phase or jot down a note for any day. Click the heading to jump between months and years.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">Features</p>
+          <h2 class="section__title">Features at a glance</h2>
+          <p class="section__lead">Keep track of dates, plans, and the little things you want to remember.</p>
+        </header>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <h3 class="feature__title">Lunar date &amp; 24 solar terms</h3>
+            <p class="feature__text">Lunar dates and 24 solar terms, computed on-device. New botanical line-art icons use three gentle colors, with compact artwork on Mac and detailed icons in the browser. Icons follow your lunar-date setting.</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">System calendar</h3>
+            <p class="feature__text">See events from your Mac calendars without changing them. Colored dots mark busy days; select a date to see its schedule and links to video meetings.</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">Holidays</h3>
+            <p class="feature__text">Subscribe to holidays for Mainland China, Hong Kong SAR, and Thailand, or add your own iCal feeds. Mainland China includes adjusted workdays, clearly marked even when lunar dates are hidden. Each subscription has its own color.</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">Moon phases</h3>
+            <p class="feature__text">See the moon phase for any date. In Luna, today's circle follows the moon, with warm yellow tones in light mode. The optional 3D Moon uses your location on-device — location is never uploaded.</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">Diary &amp; todos</h3>
+            <p class="feature__text">Free-text diary entries per day on macOS; type <code>[] buy milk</code> (or <code>[ ]</code> / <code>[x]</code>) for todos with checkboxes — completed items strike through. Export as JSON.</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">Date marks &amp; diary</h3>
+            <p class="feature__text">Color marks and diary entries on individual days in the browser extension.</p>
+          </article>
+          <article class="feature">
+            <h3 class="feature__title">Menu Bar &amp; languages</h3>
+            <p class="feature__text">Customizable status bar items: moon icon, date badge, day number, lunar day, weekday, and time — reorder as you like. Interface languages: 简体中文, 繁體中文, English, ไทย (Thai shows the Buddhist Era).</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--surface" id="download">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">Get Daylight</p>
+          <h2 class="section__title">Get Daylight</h2>
+          <p class="section__lead">Free for Mac, Chrome, and Edge. Download Daylight 2.0.3 for macOS below.</p>
+        </header>
+
+        <div class="cards cards--two">
+          <article class="card">
+            <h3 class="card__title">Browser extension</h3>
+            <p class="card__text">For Chrome and Microsoft Edge.</p>
+            <div class="card__actions">
+              <a class="btn btn--primary" href="https://chrome.google.com/webstore/detail/%E6%98%BC%E9%97%B4%E6%97%A5%E5%8E%86/fdpfnfidhlijopfejncgamefcoemjboe?hl=en" rel="noopener">Chrome Web Store</a>
+              <a class="btn btn--secondary" href="https://microsoftedge.microsoft.com/addons/detail/%E6%98%BC%E9%97%B4%E6%97%A5%E5%8E%86/dleejdlchigadggmnpaiagaejagmakpg" rel="noopener">Edge Add-ons</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3 class="card__title">macOS menu bar app</h3>
+            <p class="card__text">Version 2.0.3 · macOS 13 or later · Apple silicon and Intel. Signed and notarized, with automatic updates.</p>
+            <div class="card__actions">
+              <a class="btn btn--primary" id="mac-download" href="https://daylight.mings.work/daylight-macos.dmg">Download for macOS</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__grid">
+      <div>
+        <div class="site-footer__brand">
+          <svg class="site-footer__icon" viewBox="0 0 1024 1024" aria-hidden="true">
+            <rect width="1024" height="1024" rx="229" ry="229" fill="#1B1B1A"/>
+            <svg x="208" y="208" width="608" height="608" viewBox="0 0 32 32">
+              <circle cx="16" cy="16" r="15.2" fill="#F6F5F3"/>
+              <path d="M16,0 A16 16 0 0 1 16 32 A 8 16 0 0 1 16 0 Z" fill="#1B1B1A"/>
+            </svg>
+          </svg>
+          <span class="site-footer__name">Daylight</span>
+        </div>
+        <p class="site-footer__copy">Calendar computed on-device — lunar dates, solar terms, moon phases, and your schedule stay on your device.</p>
+        <p class="site-footer__legal">Licence GPL-2.0</p>
+      </div>
+      <div class="site-footer__contact">
+        <nav class="lang-switch" aria-label="Language">
+          <a href="./" hreflang="en" aria-current="true">EN</a>
+          <a href="zh/" hreflang="zh-Hans">简</a>
+          <a href="zh-hant/" hreflang="zh-Hant">繁</a>
+          <a href="th/" hreflang="th">ไทย</a>
+        </nav>
+        <p><a href="https://github.com/sunoj/daylight" rel="noopener">GitHub</a></p>
+        <p><a href="mailto:hi@mings.work">hi@mings.work</a></p>
+        <p><a href="/support">Support</a></p>
+        <p><a href="/privacy">Privacy</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      var sections = document.querySelectorAll(".section");
+      // Only opt into the hidden start state once something can undo it: with
+      // the class set and no observer, every section would stay invisible.
+      if (!sections.length || !("IntersectionObserver" in window)) return;
+      document.documentElement.classList.add("js-reveal");
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -5% 0px" });
+      sections.forEach(function (section) {
+        observer.observe(section);
+      });
+    })();
+  </script>
+</body>
+</html>

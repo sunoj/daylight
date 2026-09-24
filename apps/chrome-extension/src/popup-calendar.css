@@ -1,0 +1,270 @@
+.calendar-extras {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+}
+
+.hairline {
+  height: 1px;
+  background: var(--line);
+}
+
+.moon-row {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  text-align: left;
+}
+
+.moon-row:hover {
+  background: var(--surface-2);
+}
+
+.moon-row-disc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: var(--ink);
+}
+
+.moon-row-text {
+  min-width: 0;
+}
+
+.moon-row-title {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.moon-row-detail {
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.moon-row-chevron {
+  color: var(--ink-4);
+  font-size: 17px;
+  line-height: 1;
+}
+
+.quick-diary-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 16px 14px;
+}
+
+.quick-diary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 0;
+}
+
+.quick-diary-field {
+  min-width: 0;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 0 12px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 12.5px;
+}
+
+.quick-diary-field:focus {
+  outline: 2px solid var(--line-2);
+  outline-offset: 0;
+}
+
+.quick-diary-save {
+  min-width: 58px;
+  height: 34px;
+  padding: 0 15px;
+}
+
+.quick-diary-save:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.diary-timeline-scroll {
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.diary-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.diary-thought {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: start;
+}
+
+.diary-thought-todo {
+  grid-template-columns: auto auto 1fr auto;
+}
+
+.diary-thought-time {
+  color: var(--ink-4);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+
+.diary-thought-text {
+  color: var(--ink-2);
+  font-size: 12.5px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.diary-thought-done .diary-thought-text {
+  color: var(--ink-4);
+  text-decoration: line-through;
+}
+
+.diary-thought-toggle {
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+}
+
+.diary-thought-delete {
+  border: 0;
+  background: transparent;
+  color: var(--ink-4);
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+}
+
+.diary-thought-delete.armed {
+  color: var(--rust);
+}
+
+.day.weekend .num {
+  color: var(--ink-2);
+}
+
+.lunar.solar-term {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.period-title {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+}
+
+.period-title:hover {
+  color: var(--ink-2);
+}
+
+.period-grid-wrap {
+  padding: 0 var(--screen-gutter) 14px;
+}
+
+.period-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.period-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 44px;
+  padding: 5px 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--ink);
+  text-align: center;
+}
+
+.period-tile:hover {
+  background: var(--surface-2);
+}
+
+/* Inverted, as the macOS client draws it: --accent-ink is the paper colour and
+   only reads against the --accent fill. Pairing it with surface-2 put white
+   text on light grey. */
+.period-tile.selected {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.period-tile.outside {
+  opacity: 0.3;
+}
+
+.period-tile-title {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.period-tile.month-tile .period-tile-title {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.period-tile.selected .period-tile-title {
+  color: var(--accent-ink);
+}
+
+.period-tile-subtitle {
+  max-width: 100%;
+  margin-top: 1px;
+  color: var(--ink-3);
+  font-size: 10.5px;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.period-tile.selected .period-tile-subtitle {
+  color: var(--accent-ink);
+}

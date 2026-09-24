@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": ["dom", "es2020"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": false,
+    // The extension declares the slice of the chrome API it uses in
+    // src/chrome-api.d.ts. Without this, tsc also loads every @types/* in
+    // node_modules — @types/chrome arrives as a transitive dep of the legacy
+    // app and collides, redeclaring `sync` and retyping permissions.request.
+    "types": [],
+    "baseUrl": ".",
+    "paths": {
+      "@daylight/domain": ["../../packages/domain/src/index.ts"],
+      "@daylight/core-calendar": ["../../packages/core-calendar/src/index.ts"],
+      "@daylight/storage": ["../../packages/storage/src/index.ts"],
+      "@daylight/sync": ["../../packages/sync/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

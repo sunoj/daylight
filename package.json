@@ -1,0 +1,79 @@
+{
+  "name": "daylight",
+  "version": "2.0.0",
+  "private": true,
+  "license": "GPL-2.0",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "dependencies": {
+    "@hackplan/uui": "^0.4.12",
+    "@types/pouchdb": "^6.4.0",
+    "events": "^3.1.0",
+    "luxon": "^1.25.0",
+    "microtip": "^0.2.2",
+    "pouchdb": "^7.2.2",
+    "react": "^16.13.1",
+    "react-calendar": "^3.1.0",
+    "react-card-flip": "^1.0.11",
+    "react-dom": "^16.13.1",
+    "react-hotkeys": "^2.0.0",
+    "suncalc": "^1.8.0",
+    "tailwindcss": "^1.2.0",
+    "typescript": "~3.7.2"
+  },
+  "scripts": {
+    "postinstall": "patch-package",
+    "dev": "NODE_ENV=development webpack --watch --config webpack/webpack.dev.js",
+    "build": "NODE_ENV=production webpack --config webpack/webpack.prod.js",
+    "rewrite:typecheck": "npx --yes -p typescript@5.0.4 tsc -p packages/domain/tsconfig.json --noEmit && npx --yes -p typescript@5.0.4 tsc -p packages/core-calendar/tsconfig.json --noEmit && npx --yes -p typescript@5.0.4 tsc -p packages/storage/tsconfig.json --noEmit && npx --yes -p typescript@5.0.4 tsc -p packages/sync/tsconfig.json --noEmit && npx --yes -p typescript@5.0.4 tsc -p apps/chrome-extension/tsconfig.json --noEmit",
+    "test": "node scripts/run-tests.mjs",
+    "rewrite:test": "npm test",
+    "rewrite:build:chrome": "yarn workspace @daylight/chrome-extension build",
+    "rewrite:build:mac": "swift build --package-path apps/mac-menubar"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "resolutions": {
+    "use-dark-mode/use-persisted-state": "npm:@smartrent/use-persisted-state"
+  },
+  "browserslist": {
+    "production": [
+      "last 10 chrome version",
+      "last 10 firefox version"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-react": "^7.10.1",
+    "@babel/preset-typescript": "^7.10.1",
+    "@fullhuman/postcss-purgecss": "^2.1.2",
+    "@types/chrome": "^0.0.104",
+    "@types/luxon": "^1.22.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-calendar": "^3.0.1",
+    "@types/react-dom": "^16.9.0",
+    "babel-loader": "^8.1.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "html-webpack-plugin": "^4.2.0",
+    "json-loader": "^0.5.7",
+    "patch-package": "^6.2.2",
+    "postcss-loader": "^3.0.0",
+    "postcss-normalize": "^8.0.1",
+    "postinstall-postinstall": "^2.1.0",
+    "react-scripts": "3.4.1",
+    "ts-loader": "^6.2.2",
+    "webpack-cli": "^3.3.11",
+    "webpack-merge": "^4.2.2"
+  }
+}

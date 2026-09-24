@@ -1,0 +1,43 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+/apps/*/dist
+/apps/*/.build
+/daylight-extension-*.zip
+/daylight-extension-*/
+
+# misc
+.DS_Store
+.env.local
+.env
+.env.*
+.env.development.local
+.env.test.local
+.env.production.local
+*.p8
+*.p12
+*.key
+*.pem
+*.mobileprovision
+*.provisionprofile
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# mac menubar Sparkle vendor (fetched on demand by scripts/vendor-sparkle.sh)
+apps/mac-menubar/vendor/
+
+# Release artifacts staged into the site deploy, never committed
+/apps/site/*.dmg
+/apps/site/*.delta
+/apps/site/appcast.xml
