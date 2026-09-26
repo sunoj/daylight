@@ -155,7 +155,7 @@ final class Moon3DPanel: NSStackView {
 
     /// Loads the bundled NASA LRO moon model, normalized to unit radius.
     private func loadMoonModel() -> SCNNode? {
-        guard let url = Bundle.module.url(forResource: "Moon_NASA_LRO_Flat_Small", withExtension: "usdz"),
+        guard let url = ResourceBundle.kit?.url(forResource: "Moon_NASA_LRO_Flat_Small", withExtension: "usdz"),
               let scene = try? SCNScene(url: url, options: nil) else {
             return nil
         }

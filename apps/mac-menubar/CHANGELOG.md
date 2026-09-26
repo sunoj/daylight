@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.0.4] - 2026-09-26
+
+### Fixed
+- Fixed a crash when opening the calendar from the menu bar on a fresh install. Bundled fonts and the 3D moon model now load from inside the app.
+
 ## [2.0.3] - 2026-09-24
 
 ### Changed

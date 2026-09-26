@@ -9,8 +9,8 @@ Submitted on 2026-09-24 for the personal developer account, with free pricing co
 - Provisioning profile: `Daylight Mac App Store` (`JCLBJ4SZNF`).
 - Application signing identity: `Apple Distribution: Ming Sun (JHH9GC8Y8C)`.
 - Installer signing identity: `3rd Party Mac Developer Installer: Ming Sun (JHH9GC8Y8C)`.
-- Current store version: `2.0.3`, build `1` (replaces the earlier 2.0.1 and 2.0.2 submissions).
-- Package: `apps/mac-menubar/dist/app-store/Daylight-2.0.3-1.pkg`.
+- Current store version: `2.0.4`, build `1` (the rejected 2.0.3 version record was renamed to 2.0.4 and resubmitted).
+- Package: `apps/mac-menubar/dist/app-store/Daylight-2.0.4-1.pkg`.
 - Listing metadata and review notes: `assets/store/mac-app-store/listing.json`.
 - Screenshots: `assets/store/mac-app-store/screenshots/{en-US,zh-Hans}`.
 
@@ -39,7 +39,7 @@ Version `2.0.1` was submitted on 2026-09-24 at 03:57:17 UTC, then canceled befor
 
 - App ID: `6815507768`.
 - Version ID: `517d06b7-a5ed-412b-a411-9651110cff8b`.
-- Build ID: `cfdc1fb0-0341-4802-8b87-35a200b93cb7`.
+- Build ID: `efc2262e-61ab-4510-959c-db9b7a83cee2` (2.0.4 build 1; the rejected 2.0.3 build was `cfdc1fb0-0341-4802-8b87-35a200b93cb7`).
 - Review submission: `08ec415d-c0e1-4eae-8e90-bb7115fa630f`.
 - [App Store Connect](https://appstoreconnect.apple.com/apps/6815507768/appstore).
 - Public URL after approval: `https://apps.apple.com/app/id6815507768`.
@@ -51,6 +51,21 @@ The owner confirmed Daylight is a personal, noncommercial project with no profit
 API operations use profile `GoldGood`, belonging to personal team `JHH9GC8Y8C`. Web login uses numeric provider ID `122223253` (public provider ID `8099100b-af06-423e-bc8d-10f5eec00ee9`); the developer Team ID is not the web provider selector. The checksum-verified CLI used for submission is `/tmp/daylight-asc-5.4.0`.
 
 Pre-submission deep validation had zero substantive metadata or build issues. Remaining warnings were the initial release's non-editable What's New fields and an agreement-status detection warning. Both developer agreements were separately verified active. The replacement submission's status check reported zero blockers. Only Apple review remains outstanding; this is submitted, not yet approved or publicly released.
+
+### 2.0.3 rejection and 2.0.4 resubmission
+
+On 2026-09-25, App Review rejected 2.0.3 under Guideline 2.1(a). The app crashed when the menu bar icon was clicked right after launch. The cause was SwiftPM's `Bundle.module` resource lookup; the fix is described in `release-status.md`. The rejected version record `517d06b7…` was renamed to `2.0.4`, and build `efc2262e…` was attached. The version then returned to `PREPARE_FOR_SUBMISSION`.
+
+A rejected version cannot be added to a new review submission. Apple returns a conflict because the old submission is in `UNRESOLVED_ISSUES`. Resubmit the original submission instead, in two steps:
+
+1. Mark its rejected item resolved: `asc review items-update --id <item id from asc review items-list --submission 08ec415d-…> --resolved true`. The item returns to `READY_FOR_REVIEW`.
+2. Run `asc review submissions-submit --id 08ec415d-… --confirm`.
+
+Skipping step 1 makes step 2 fail with "Version is not ready to be submitted yet, please try again later". The message suggests waiting will help. It does not: the call failed for 13 minutes and succeeded right after the item was resolved. Resubmitted 2026-09-26 06:33:24 UTC; state `WAITING_FOR_REVIEW`.
+
+A failed `asc review submit` attempt left an empty `READY_FOR_REVIEW` draft, `de230c58-953d-4e3c-900f-5a4771a0c205`. An unsubmitted draft cannot be canceled. It holds no items and is harmless.
+
+Run `package-app-store.sh` with `bash`. The file is not executable.
 
 ## Verification
 

@@ -137,7 +137,7 @@ enum Typography {
 enum Fonts {
     static let ensureRegistered: Void = {
         for name in ["IBMPlexSans-VF", "IBMPlexMono-Regular", "IBMPlexMono-Medium"] {
-            guard let url = Bundle.module.url(forResource: name, withExtension: "ttf") else { continue }
+            guard let url = ResourceBundle.kit?.url(forResource: name, withExtension: "ttf") else { continue }
             CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
         }
     }()

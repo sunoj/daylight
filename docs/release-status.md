@@ -1,15 +1,17 @@
 # Release status
 
-As of 2026-09-24. Supersedes the release notes in `mac-menubar-progress.md`,
+As of 2026-09-26. Supersedes the release notes in `mac-menubar-progress.md`,
 which describes the state as of June and is stale.
 
-## macOS 2.0.3 — released
+## macOS 2.0.4 — released
 
 Live and verified against the published files, not local build output:
 
-The direct release is universal (Apple silicon and Intel), version `2.0.3`, build `202609241334`. The live DMG is 15,338,421 bytes; SHA-256: `ba9f15f700f5a5d88423866a434190d935bd08d65f632fb6dd0baa4c41c93e72`. It removes the retired remote default-config request; holiday subscriptions continue to refresh from their selected iCal sources. The preceding 2.0.2 release added Traditional Chinese. The website has four locales, including `/zh-hant/` with an actual Traditional Chinese app screenshot. The Sparkle feed publishes only the current full installer, plus signed deltas for older installed versions. Retired full installers were removed from the site.
+The direct release is universal (Apple silicon and Intel), version `2.0.4`, build `202609261312`. The live DMG is 15,339,610 bytes; SHA-256: `449a67b07adb5e1bb72a64104e1d4e55ff4604b197256dfeda0366b01420582d`. The Sparkle feed publishes the 2.0.4 full installer plus signed deltas from 2.0.0 through 2.0.3.
 
-The separate personal-account Mac App Store 2.0.3 build is **WAITING_FOR_REVIEW**, with free pricing and automatic release after approval. The earlier submissions were replaced before review. See [the App Store release record](mac-app-store-release.md) for IDs and the completed DSA declaration.
+2.0.4 fixes a crash on the first popover open that affected every install except the build machine. SwiftPM's generated `Bundle.module` accessor never looks in `Contents/Resources`. It falls back to the absolute `.build` path on the compiling Mac and calls `fatalError` when both miss. The popover loads the bundled fonts on first display, so any other Mac crashed on the first click. App Review caught it (Guideline 2.1(a), 2026-09-25). Resources now load through `ResourceBundle.kit`, and a test forbids `Bundle.module` anywhere else in the sources. **Direct-download 2.0.0 to 2.0.3 were affected too.**
+
+The personal-account Mac App Store build is 2.0.4 build `1`. It was resubmitted on the original review submission after the 2.0.3 rejection. See [the App Store release record](mac-app-store-release.md).
 
 - `https://daylight.mings.work` — download button live in all four locales,
   pointing at the stable `daylight-macos.dmg` so a future release replaces one
