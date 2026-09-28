@@ -51,7 +51,7 @@ final class Moon3DPanel: NSStackView {
         if requestLocation {
             locationService.start()
         } else {
-            update(for: .unavailable(L("未授权")))
+            update(for: .unavailable("未授权"))
         }
     }
 
@@ -203,7 +203,7 @@ final class Moon3DPanel: NSStackView {
         switch state {
         case .waiting: return L("正在获取位置…")
         case .authorized: return L("使用当前位置")
-        case let .unavailable(reason): return reason
+        case let .unavailable(reason): return L(reason)
         }
     }
 

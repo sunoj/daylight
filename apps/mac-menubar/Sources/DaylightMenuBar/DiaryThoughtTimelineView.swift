@@ -127,8 +127,11 @@ final class DiaryThoughtTimelineView: NSView {
         scroll.scrollerStyle = .overlay
         scroll.borderType = .noBorder
         scroll.translatesAutoresizingMaskIntoConstraints = false
+        // Below the labels' vertical compression resistance (.defaultHigh):
+        // at equal priority Auto Layout met the hug by squashing rows to 0pt
+        // instead of capping the scroll view at maxHeight and scrolling.
         let hug = scroll.heightAnchor.constraint(equalTo: document.heightAnchor)
-        hug.priority = .defaultHigh
+        hug.priority = NSLayoutConstraint.Priority(NSLayoutConstraint.Priority.defaultHigh.rawValue - 1)
         addSubview(scroll)
         NSLayoutConstraint.activate([
             scroll.topAnchor.constraint(equalTo: topAnchor),
@@ -151,7 +154,9 @@ final class DiaryThoughtTimelineView: NSView {
         row.translatesAutoresizingMaskIntoConstraints = false
 
         let time = UI.label(DiaryThoughtTimeLabel.text(for: thought.createdAt), font: Typography.mono(10.5), color: style.timeColor)
-        let text = UI.label(thought.content, font: Typography.sans(12.5), color: style.textColor)
+        let text = DiaryWrappingLabel(labelWithString: thought.content)
+        text.font = Typography.sans(12.5)
+        text.textColor = style.textColor
         if thought.done == true {
             text.textColor = style.doneTextColor
             text.attributedStringValue = NSAttributedString(string: thought.content, attributes: [
@@ -163,6 +168,10 @@ final class DiaryThoughtTimelineView: NSView {
         }
         text.lineBreakMode = .byWordWrapping
         text.maximumNumberOfLines = 0
+        // An unwrapped note's width must never push the row — and through the
+        // scroll document, the whole popover — wider than it was given.
+        text.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        text.setContentHuggingPriority(.defaultLow, for: .horizontal)
         let toggle: DiaryThoughtToggleButton?
         if let done = thought.done {
             let button = DiaryThoughtToggleButton(target: self, action: #selector(toggleThought(_:)))
@@ -211,6 +220,12 @@ final class DiaryThoughtTimelineView: NSView {
                 toggle.heightAnchor.constraint(equalToConstant: 20)
             ]
         }
+        // With its compression resistance lowered, the ≤ above alone lets the
+        // text shrink to nothing; this pulls it out to the delete control while
+        // still yielding to the row width.
+        let fill = text.trailingAnchor.constraint(equalTo: remove.leadingAnchor, constant: -8)
+        fill.priority = .init(500)
+        constraints.append(fill)
         NSLayoutConstraint.activate(constraints)
         return row
     }
@@ -239,6 +254,27 @@ final class DiaryThoughtTimelineView: NSView {
     @objc private func toggleThought(_ sender: DiaryThoughtToggleButton) {
         guard let id = sender.thoughtId else { return }
         onToggle?(id)
+    }
+}
+
+/// Takes its width from constraints and reports only the height it needs at
+/// that width. A multi-line NSTextField otherwise reports its unwrapped
+/// single-line width as intrinsic, and feeding `bounds.width` back through
+/// `preferredMaxLayoutWidth` locks in whatever narrow width a first pass saw.
+final class DiaryWrappingLabel: NSTextField {
+    private var measuredWidth: CGFloat = 0
+
+    override var intrinsicContentSize: NSSize {
+        guard bounds.width > 0, let cell else { return super.intrinsicContentSize }
+        let fit = cell.cellSize(forBounds: NSRect(x: 0, y: 0, width: bounds.width, height: .greatestFiniteMagnitude))
+        return NSSize(width: NSView.noIntrinsicMetric, height: ceil(fit.height))
+    }
+
+    override func layout() {
+        super.layout()
+        guard bounds.width != measuredWidth else { return }
+        measuredWidth = bounds.width
+        invalidateIntrinsicContentSize()
     }
 }
 

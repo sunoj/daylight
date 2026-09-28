@@ -99,7 +99,7 @@ final class CalendarSettingsPanel: NSStackView {
 
     private func header() -> NSView {
         let title = UI.label(L("设置"), font: Typography.sans(20, .semibold), color: Palette.ink)
-        let badge = pill("v2.0")
+        let badge = pill("v" + (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "2.0"))
         let titleRow = NSStackView(views: [title, badge])
         titleRow.orientation = .horizontal
         titleRow.spacing = 9

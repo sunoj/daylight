@@ -71,7 +71,7 @@ final class MoonPhasePanel: NSView {
         disc.waxing = observation.phaseAngleDegrees < 180
         titleLabel.stringValue = "\(MoonNames.phaseCN(observation.phaseAngleDegrees))\(lunarSuffix())"
         let percent = Int((observation.illuminatedFraction * 100).rounded())
-        detailLabel.stringValue = "\(percent)% 照亮 · 月龄 \(String(format: "%.1f", observation.ageDays))d"
+        detailLabel.stringValue = "\(percent)% \(L("照亮")) · \(L("月龄")) \(String(format: "%.1f", observation.ageDays))d"
     }
 
     private func lunarSuffix() -> String {

@@ -271,7 +271,7 @@ final class DaylightStoreTests: XCTestCase {
 
         let resolution = LocationService.resolution(for: .denied, cachedLocation: location)
 
-        XCTAssertEqual(resolution, .unavailable("Location permission is disabled"))
+        XCTAssertEqual(resolution, .unavailable("定位权限已关闭"))
     }
 
     func testWriteInvalidatesCachedSettingsSoNextReadReflectsChange() {

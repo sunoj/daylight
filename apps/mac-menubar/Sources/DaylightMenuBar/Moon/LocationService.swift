@@ -55,9 +55,9 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
             return .requestLive
         case .denied, .restricted:
             // A revoked permission must not be bypassed with a stored coordinate.
-            return .unavailable("Location permission is disabled")
+            return .unavailable("定位权限已关闭")
         @unknown default:
-            return .unavailable("Location status is unknown")
+            return .unavailable("定位状态未知")
         }
     }
 
@@ -99,7 +99,7 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let coordinate = locations.last?.coordinate else {
-            onStateChanged?(.unavailable("Location is unavailable"))
+            onStateChanged?(.unavailable("无法获取位置"))
             return
         }
         let location = ObserverLocation(
@@ -111,6 +111,6 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        onStateChanged?(.unavailable("Location lookup failed"))
+        onStateChanged?(.unavailable("定位失败"))
     }
 }

@@ -247,6 +247,10 @@ enum Loc {
         "正在获取位置…": [.en: "Locating…", .th: "กำลังระบุตำแหน่ง…"],
         "使用当前位置": [.en: "Using current location", .th: "ใช้ตำแหน่งปัจจุบัน"],
         "未授权": [.en: "not authorized", .th: "ไม่ได้รับอนุญาต"],
+        "定位权限已关闭": [.en: "Location permission is disabled", .th: "ปิดสิทธิ์เข้าถึงตำแหน่งอยู่"],
+        "定位状态未知": [.en: "Location status is unknown", .th: "ไม่ทราบสถานะตำแหน่ง"],
+        "无法获取位置": [.en: "Location is unavailable", .th: "ไม่สามารถระบุตำแหน่งได้"],
+        "定位失败": [.en: "Location lookup failed", .th: "ระบุตำแหน่งไม่สำเร็จ"],
         // Holidays
         "订阅法定节假日": [.en: "Subscribe holidays", .th: "สมัครวันหยุด"],
         "选择一个来源，自动标注放假与调休": [.en: "Pick a source to mark holidays automatically", .th: "เลือกแหล่งเพื่อทำเครื่องหมายวันหยุดอัตโนมัติ"],
