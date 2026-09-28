@@ -1,17 +1,27 @@
 # Release status
 
-As of 2026-09-26. Supersedes the release notes in `mac-menubar-progress.md`,
+As of 2026-09-28. Supersedes the release notes in `mac-menubar-progress.md`,
 which describes the state as of June and is stale.
 
-## macOS 2.0.4 — released
+## macOS 2.0.5 — released
 
 Live and verified against the published files, not local build output:
 
-The direct release is universal (Apple silicon and Intel), version `2.0.4`, build `202609261312`. The live DMG is 15,339,610 bytes; SHA-256: `449a67b07adb5e1bb72a64104e1d4e55ff4604b197256dfeda0366b01420582d`. The Sparkle feed publishes the 2.0.4 full installer plus signed deltas from 2.0.0 through 2.0.3.
+The direct release is universal (Apple silicon and Intel), version `2.0.5`, build `202609282134`. The live DMG is 15,349,347 bytes; SHA-256: `9dbd09e063dabc172e97504a7f90b306be18697bbfcedd90aa23874f77269723`. The Sparkle feed publishes the full installer plus signed deltas from 2.0.0 through 2.0.4.
+
+2.0.5 carries two sets of changes:
+- Fixes from the UI audit: a long diary note no longer widens the popover, many notes scroll instead of overlapping, and several strings are localized. See `mac-ui-audit-2026-09.md`.
+- Performance: the popover is prewarmed after launch, and the month grids use frame layout.
+
+The grid rewrite first shipped only to the local build, where it truncated every date. It was fixed before this release; see §6 of the audit document.
+
+**Edge cache lag.** The first live check right after a deploy still served 2.0.4's `appcast.xml` and `daylight-macos.dmg`. A re-check a minute later returned 2.0.5. Always re-verify after a short wait. Cloudflare also serves `daylight-macos.dmg` with `max-age=14400`, overriding the `max-age=0` in `_headers`. That is probably a zone-level Browser Cache TTL, so a browser can keep a stale DMG for up to 4 hours.
+
+### 2.0.4
 
 2.0.4 fixes a crash on the first popover open that affected every install except the build machine. SwiftPM's generated `Bundle.module` accessor never looks in `Contents/Resources`. It falls back to the absolute `.build` path on the compiling Mac and calls `fatalError` when both miss. The popover loads the bundled fonts on first display, so any other Mac crashed on the first click. App Review caught it (Guideline 2.1(a), 2026-09-25). Resources now load through `ResourceBundle.kit`, and a test forbids `Bundle.module` anywhere else in the sources. **Direct-download 2.0.0 to 2.0.3 were affected too.**
 
-The personal-account Mac App Store build is 2.0.4 build `1`. It was resubmitted on the original review submission after the 2.0.3 rejection. See [the App Store release record](mac-app-store-release.md).
+The personal-account Mac App Store build is still 2.0.4 build `1`, in review. It was resubmitted on the original review submission after the 2.0.3 rejection. 2.0.5 has not been submitted to the App Store. See [the App Store release record](mac-app-store-release.md).
 
 - `https://daylight.mings.work` — download button live in all four locales,
   pointing at the stable `daylight-macos.dmg` so a future release replaces one
