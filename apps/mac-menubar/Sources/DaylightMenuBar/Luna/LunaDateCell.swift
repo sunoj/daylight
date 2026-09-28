@@ -12,6 +12,13 @@ final class LunaDateCell: NSControl {
     private let showsSubtitle: Bool
     private var hoverCircle: NSView?
     private var trackingArea: NSTrackingArea?
+    // Laid out by frame in `layout()`. Nested stack views and per-cell
+    // constraints made the 42-cell grid cost ~40ms of Auto Layout per render.
+    private var number = NSTextField()
+    private var subtitle: NSTextField?
+    private var dots: [NSView] = []
+    private var circle: NSView?
+    private var badge: NSTextField?
 
     init(
         day: CalendarDay,
@@ -27,12 +34,14 @@ final class LunaDateCell: NSControl {
         self.isSelected = day.date == selectedDate
         self.showsSubtitle = showsSubtitle
         super.init(frame: .zero)
-        translatesAutoresizingMaskIntoConstraints = false
         alphaValue = day.isOutsideMonth ? 0.3 : 1
         toolTip = title.holidayTooltip
-        heightAnchor.constraint(equalToConstant: showsSubtitle ? Metrics.lunaCellHeightTall : Metrics.lunaCellHeight).isActive = true
         configure(day: day, title: title, events: events, selectedDate: selectedDate, showsSubtitle: showsSubtitle)
-        if title.isWorkday { CalendarWorkdayBadge.add(to: self, color: Palette.ink2) }
+        if title.isWorkday {
+            let badge = CalendarWorkdayBadge.make(color: Palette.ink2)
+            addSubview(badge)
+            self.badge = badge
+        }
     }
 
     required init?(coder: NSCoder) { nil }
@@ -75,93 +84,105 @@ final class LunaDateCell: NSControl {
         selectedDate: LocalDate,
         showsSubtitle: Bool
     ) {
-        let number = UI.label(title.primary, font: Typography.mono(15, .medium), color: numberColor(day: day))
-        let subtitle = UI.label(
-            title.secondary ?? "",
-            font: Typography.sans(Metrics.lunaSubtitleFontSize, title.isSolarTerm ? .semibold : .regular),
-            color: subtitleColor(day: day, title: title),
-            align: .center
-        )
-        subtitle.lineBreakMode = .byTruncatingTail
-        subtitle.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-
-        let labels = NSStackView(views: showsSubtitle ? [number, subtitle] : [number])
-        labels.orientation = .vertical
-        labels.alignment = .centerX
-        labels.spacing = Metrics.lunaLabelStackSpacing
-        labels.translatesAutoresizingMaskIntoConstraints = false
-
-        // The dot row's height is reserved in EVERY cell, empty or not. Building
-        // the stack only from the views a cell happens to have made its content
-        // taller when there were dots, and centring that pushed the number up —
-        // so day numbers sat at different heights across one row.
-        let dotRow = makeDotRow(title: title, events: events, isToday: day.isToday) ?? emptyDotRow()
-
-        let content = NSStackView(views: [labels, dotRow])
-        content.orientation = .vertical
-        content.alignment = .centerX
-        content.spacing = Metrics.lunaDotRowGap
-        content.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(content)
-
         let showsCircle = isToday || isSelected
+        let circle: NSView
         if showsCircle {
-            let diameter = Metrics.lunaCircleDiameter(showsSubtitle: showsSubtitle)
-            let circle: NSView = day.isToday
+            circle = day.isToday
                 ? TodayMoonBackgroundView(date: day.date)
                 : UI.roundedBox(fill: Palette.dateSelection, radius: 999, border: Palette.dateSelectionBorder)
-            circle.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(circle, positioned: .below, relativeTo: content)
-            let inset = Metrics.lunaCircleEdgeInset * 2
-            let size = circle.widthAnchor.constraint(equalToConstant: diameter)
-            size.priority = .defaultHigh
-            NSLayoutConstraint.activate([
-                circle.centerXAnchor.constraint(equalTo: content.centerXAnchor),
-                circle.centerYAnchor.constraint(equalTo: content.centerYAnchor),
-                circle.widthAnchor.constraint(equalTo: circle.heightAnchor),
-                size,
-                circle.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -inset),
-                circle.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, constant: -inset)
-            ])
         } else {
-            let diameter = Metrics.lunaCircleDiameter(showsSubtitle: showsSubtitle)
-            let circle = UI.roundedBox(fill: Palette.surface2, radius: 999)
+            circle = UI.roundedBox(fill: Palette.surface2, radius: 999)
             circle.alphaValue = 0
-            circle.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(circle, positioned: .below, relativeTo: content)
-            let inset = Metrics.lunaCircleEdgeInset * 2
-            let size = circle.widthAnchor.constraint(equalToConstant: diameter)
-            size.priority = .defaultHigh
-            NSLayoutConstraint.activate([
-                circle.centerXAnchor.constraint(equalTo: content.centerXAnchor),
-                circle.centerYAnchor.constraint(equalTo: content.centerYAnchor),
-                circle.widthAnchor.constraint(equalTo: circle.heightAnchor),
-                size,
-                circle.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -inset),
-                circle.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, constant: -inset)
-            ])
             hoverCircle = circle
         }
+        self.circle = circle
 
-        NSLayoutConstraint.activate([
-            content.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: Metrics.lunaCircleEdgeInset),
-            content.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -Metrics.lunaCircleEdgeInset),
-            content.centerXAnchor.constraint(equalTo: centerXAnchor),
-            content.centerYAnchor.constraint(equalTo: centerYAnchor)
-        ])
+        number = UI.label(title.primary, font: Typography.mono(15, .medium), color: numberColor(day: day), align: .center)
+        if showsSubtitle {
+            let subtitle = UI.label(
+                title.secondary ?? "",
+                font: Typography.sans(Metrics.lunaSubtitleFontSize, title.isSolarTerm ? .semibold : .regular),
+                color: subtitleColor(day: day, title: title),
+                align: .center
+            )
+            subtitle.lineBreakMode = .byTruncatingTail
+            self.subtitle = subtitle
+        }
+        dots = makeDots(title: title, events: events, isToday: day.isToday)
+
+        for view in [circle, number] + [subtitle].compactMap { $0 } + dots {
+            view.translatesAutoresizingMaskIntoConstraints = true
+            addSubview(view)
+        }
     }
 
-    /// A dot row with no dots: holds the same height so every cell's content
-    /// box matches and the numbers line up across the grid.
-    private func emptyDotRow() -> NSView {
-        let spacer = NSView()
-        spacer.translatesAutoresizingMaskIntoConstraints = false
-        spacer.heightAnchor.constraint(equalToConstant: Metrics.lunaDotSize).isActive = true
-        spacer.widthAnchor.constraint(equalToConstant: 0).isActive = true
-        return spacer
+    // Frames are computed once per size, so a move into a window (the
+    // prewarmed popover is laid out before it has one) must redo them.
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        needsLayout = true
     }
 
-    private func makeDotRow(title: CalendarDayTitle, events: [CalendarEvent], isToday: Bool) -> NSStackView? {
+    override func viewDidChangeBackingProperties() {
+        super.viewDidChangeBackingProperties()
+        needsLayout = true
+    }
+
+    /// Frame layout reproducing the former stacks: a vertical label stack
+    /// (number, optional subtitle) above a dot row whose height is reserved in
+    /// EVERY cell, so numbers line up across a row whether or not a cell has
+    /// dots; the whole content centred in the cell; the circle centred on the
+    /// content and capped by the cell's edge insets.
+    override func layout() {
+        super.layout()
+        let inset = Metrics.lunaCircleEdgeInset
+        let available = max(bounds.width - 2 * inset, 0)
+
+        let numberSize = number.intrinsicContentSize
+        var subtitleSize = subtitle?.intrinsicContentSize ?? .zero
+        subtitleSize.width = min(subtitleSize.width, available)
+        let dotCount = CGFloat(dots.count)
+        let dotRowWidth = dotCount > 0 ? dotCount * Metrics.lunaDotSize + (dotCount - 1) * Metrics.lunaDotSpacing : 0
+
+        let labelsHeight = numberSize.height + (subtitle == nil ? 0 : Metrics.lunaLabelStackSpacing + subtitleSize.height)
+        let contentHeight = labelsHeight + Metrics.lunaDotRowGap + Metrics.lunaDotSize
+        let contentWidth = min(max(numberSize.width, subtitleSize.width, dotRowWidth), available)
+        let content = NSRect(x: (bounds.width - contentWidth) / 2, y: (bounds.height - contentHeight) / 2,
+                             width: contentWidth, height: contentHeight)
+
+        // Labels span the whole usable width with their text centred, rather
+        // than hugging a measured text width: a frame exactly as wide as the
+        // text measured before the popover had a window truncated every date
+        // to "…" once drawn in it.
+        number.frame = aligned(NSRect(x: content.midX - available / 2, y: content.maxY - numberSize.height,
+                                      width: available, height: numberSize.height))
+        // The subtitle takes the cell's full width: the circle's edge inset
+        // has nothing to do with text, and a three-character holiday name
+        // such as 国庆节 needs ~33.5pt once drawn in the popover, more than
+        // the inset left in a 37pt column.
+        if let subtitle {
+            subtitle.frame = aligned(NSRect(x: 0,
+                                            y: content.maxY - numberSize.height - Metrics.lunaLabelStackSpacing - subtitleSize.height,
+                                            width: bounds.width, height: subtitleSize.height))
+        }
+        var dotX = content.midX - dotRowWidth / 2
+        for dot in dots {
+            dot.frame = aligned(NSRect(x: dotX, y: content.minY, width: Metrics.lunaDotSize, height: Metrics.lunaDotSize))
+            dotX += Metrics.lunaDotSize + Metrics.lunaDotSpacing
+        }
+        let diameter = min(Metrics.lunaCircleDiameter(showsSubtitle: showsSubtitle), available, bounds.height - 2 * inset)
+        circle?.frame = aligned(NSRect(x: content.midX - diameter / 2, y: content.midY - diameter / 2,
+                                       width: diameter, height: diameter))
+        if let badge {
+            badge.frame = aligned(CalendarWorkdayBadge.frame(for: badge, in: bounds, flipped: false))
+        }
+    }
+
+    private func aligned(_ rect: NSRect) -> NSRect {
+        backingAlignedRect(rect, options: .alignAllEdgesNearest)
+    }
+
+    private func makeDots(title: CalendarDayTitle, events: [CalendarEvent], isToday: Bool) -> [NSView] {
         // Three, not four: the dot row sits below the circle's centre, where the
         // chord is only about 21pt wide — a fourth dot pushes past the curve.
         var colors = Array(title.holidayColorIds.prefix(Metrics.lunaMaxDots)).map(Palette.holidayColor)
@@ -170,20 +191,11 @@ final class LunaDateCell: NSControl {
             guard colors.count < Metrics.lunaMaxDots, seen.insert(event.calendarId).inserted else { continue }
             colors.append(event.color)
         }
-        guard !colors.isEmpty else { return nil }
-
-        let row = NSStackView()
-        row.orientation = .horizontal
-        row.spacing = Metrics.lunaDotSpacing
-        row.translatesAutoresizingMaskIntoConstraints = false
-        for color in colors {
+        return colors.map { color in
             let dot = UI.roundedBox(fill: color, radius: 999)
             dot.alphaValue = isToday ? 1 : 0.82
-            dot.widthAnchor.constraint(equalToConstant: Metrics.lunaDotSize).isActive = true
-            dot.heightAnchor.constraint(equalToConstant: Metrics.lunaDotSize).isActive = true
-            row.addArrangedSubview(dot)
+            return dot
         }
-        return row
     }
 
     private func numberColor(day: CalendarDay) -> NSColor {

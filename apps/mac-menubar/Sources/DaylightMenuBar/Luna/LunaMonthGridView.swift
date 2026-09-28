@@ -51,55 +51,66 @@ final class LunaMonthGridView: NSView {
         let titles = days.map { formatter.titleParts(for: $0, settings: titleSettings) }
         let showsSubtitle = settings.lunaShowLunarDate && titles.contains { $0.secondary != nil }
 
-        let content = NSStackView()
-        content.orientation = .vertical
-        content.spacing = Metrics.gridGap
-        content.alignment = .leading
-        content.edgeInsets = NSEdgeInsets(top: 0, left: 14, bottom: 10, right: 14)
-        content.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(content)
-        NSLayoutConstraint.activate([
-            content.topAnchor.constraint(equalTo: topAnchor),
-            content.leadingAnchor.constraint(equalTo: leadingAnchor),
-            content.trailingAnchor.constraint(equalTo: trailingAnchor),
-            content.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-
-        let weekdays = NSStackView(views: settings.weekRule.weekdayLabels.enumerated().map { index, label in
+        weekdayLabels = settings.weekRule.weekdayLabels.enumerated().map { index, label in
             weekdayLabel(label.uppercased(), weekend: isWeekend(index: index, rule: settings.weekRule))
-        })
-        weekdays.orientation = .horizontal
-        weekdays.distribution = .fillEqually
-        weekdays.spacing = Metrics.gridGap
-        content.addArrangedSubview(weekdays)
-        weekdays.widthAnchor.constraint(equalTo: content.widthAnchor).isActive = true
-
-        let grid = NSStackView()
-        grid.orientation = .vertical
-        grid.spacing = Metrics.gridGap
-        grid.alignment = .leading
-        content.addArrangedSubview(grid)
-        grid.widthAnchor.constraint(equalTo: content.widthAnchor).isActive = true
-        for rowIndex in 0..<6 {
-            let row = NSStackView()
-            row.orientation = .horizontal
-            row.distribution = .fillEqually
-            row.spacing = Metrics.gridGap
-            for column in 0..<7 {
-                let index = rowIndex * 7 + column
-                let day = days[index]
-                row.addArrangedSubview(LunaDateCell(
-                    day: day,
-                    title: titles[index],
-                    events: eventsByDay[day.date.key] ?? [],
-                    selectedDate: selectedDate,
-                    showsSubtitle: showsSubtitle,
-                    onSelectDate: onSelectDate
-                ))
-            }
-            grid.addArrangedSubview(row)
-            row.widthAnchor.constraint(equalTo: grid.widthAnchor).isActive = true
         }
+        cells = days.enumerated().map { index, day in
+            LunaDateCell(
+                day: day,
+                title: titles[index],
+                events: eventsByDay[day.date.key] ?? [],
+                selectedDate: selectedDate,
+                showsSubtitle: showsSubtitle,
+                onSelectDate: onSelectDate
+            )
+        }
+        cellHeight = showsSubtitle ? Metrics.lunaCellHeightTall : Metrics.lunaCellHeight
+        for view in weekdayLabels + cells {
+            view.translatesAutoresizingMaskIntoConstraints = true
+            addSubview(view)
+        }
+    }
+
+    // Laid out by frame: the former weekday row plus six equal-width row stacks
+    // were seven NSStackViews re-solved by Auto Layout on every render.
+    private static let insets = NSEdgeInsets(top: 0, left: 14, bottom: 10, right: 14)
+    private var weekdayLabels: [NSView] = []
+    private var cells: [NSView] = []
+    private var cellHeight: CGFloat = Metrics.lunaCellHeight
+
+    override var isFlipped: Bool { true }
+
+    private var weekdayHeight: CGFloat {
+        weekdayLabels.map(\.intrinsicContentSize.height).max() ?? 0
+    }
+
+    override var intrinsicContentSize: NSSize {
+        let rows = CGFloat(cells.count / 7)
+        let height = Self.insets.top + weekdayHeight + Metrics.gridGap
+            + rows * cellHeight + max(rows - 1, 0) * Metrics.gridGap + Self.insets.bottom
+        return NSSize(width: NSView.noIntrinsicMetric, height: height)
+    }
+
+    override func layout() {
+        super.layout()
+        let gap = Metrics.gridGap
+        let columnWidth = (bounds.width - Self.insets.left - Self.insets.right - 6 * gap) / 7
+        let x = { (column: Int) in Self.insets.left + CGFloat(column) * (columnWidth + gap) }
+        let labelHeight = weekdayHeight
+        for (column, label) in weekdayLabels.enumerated() {
+            label.frame = aligned(NSRect(x: x(column), y: Self.insets.top, width: columnWidth, height: labelHeight))
+        }
+        var y = Self.insets.top + labelHeight + gap
+        for row in 0..<(cells.count / 7) {
+            for column in 0..<7 {
+                cells[row * 7 + column].frame = aligned(NSRect(x: x(column), y: y, width: columnWidth, height: cellHeight))
+            }
+            y += cellHeight + gap
+        }
+    }
+
+    private func aligned(_ rect: NSRect) -> NSRect {
+        backingAlignedRect(rect, options: .alignAllEdgesNearest)
     }
 
     private func weekdayLabel(_ text: String, weekend: Bool) -> NSView {

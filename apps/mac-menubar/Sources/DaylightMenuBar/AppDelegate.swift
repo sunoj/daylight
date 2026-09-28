@@ -20,6 +20,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         configureStatusItem()
         configurePopover()
         refreshStatusTitle()
+        DispatchQueue.main.async { [weak self] in self?.prewarmPopover() }
         // No-op in unbundled dev builds; in release bundles this arms
         // Sparkle's scheduled background update checks.
         Updater.shared.start()
@@ -46,6 +47,13 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             calendarModel: calendarModel,
             onDataChanged: { [weak self] in self?.refreshStatusTitle() }
         )
+    }
+
+    /// Builds the popover's view tree once the launch has settled, so the first
+    /// click only has to show it. Loaded on demand, that click paid for font
+    /// registration, lunar tables and the first layout: 270–770ms cold.
+    private func prewarmPopover() {
+        popover.contentViewController?.view.layoutSubtreeIfNeeded()
     }
 
     private func refreshStatusTitle() {

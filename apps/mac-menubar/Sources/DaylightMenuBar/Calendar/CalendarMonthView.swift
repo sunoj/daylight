@@ -26,10 +26,17 @@ struct CalendarMonthViewConfig {
     }
 }
 
-final class CalendarMonthView: NSStackView {
+/// Laid out by frame: the weekday row and six rows of stack views (plus a
+/// week-number column) were re-solved by Auto Layout on every render.
+final class CalendarMonthView: NSView {
     private let calendarModel: CalendarModel
     private let titleFormatter: CalendarDayTitleFormatter
     private let onSelectDate: (LocalDate) -> Void
+    private var weekdayLabels: [NSView] = []
+    private var weekHeader: NSView?
+    private var cells: [CalendarDateCell] = []
+    private var weekLabels: [NSTextField] = []
+    private var showsSubtitle = true
 
     init(
         store: DaylightStore,
@@ -42,85 +49,96 @@ final class CalendarMonthView: NSStackView {
         self.titleFormatter = CalendarDayTitleFormatter(store: store, lunarCalendar: lunarCalendar)
         self.onSelectDate = onSelectDate
         super.init(frame: .zero)
-        orientation = .vertical
-        spacing = Metrics.gridGap
         render(config)
     }
 
     required init?(coder: NSCoder) { nil }
 
+    override var isFlipped: Bool { true }
+
     private func render(_ config: CalendarMonthViewConfig) {
-        alignment = .leading
-        let weekdays = weekdayRow(settings: config.settings)
-        let grid = calendarGrid(config)
-        addArrangedSubview(weekdays)
-        addArrangedSubview(grid)
-        weekdays.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-        grid.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-    }
-
-    private func weekdayRow(settings: UserSettings) -> NSView {
-        let labels = settings.weekRule.weekdayLabels
-        let cells: [NSView] = labels.enumerated().map { index, label in
-            weekdayLabel(label.uppercased(), weekend: isWeekendColumn(index: index, rule: settings.weekRule))
+        let rule = config.settings.weekRule
+        weekdayLabels = rule.weekdayLabels.enumerated().map { index, label in
+            weekdayLabel(label.uppercased(), weekend: isWeekendColumn(index: index, rule: rule))
         }
-        let leading = settings.showWeekNumbers ? weekHeaderColumn() : nil
-        return gridRow(leading: leading, cells: cells)
-    }
-
-    private func calendarGrid(_ config: CalendarMonthViewConfig) -> NSView {
-        let grid = NSStackView()
-        grid.orientation = .vertical
-        grid.spacing = Metrics.gridGap
-        grid.alignment = .leading
-        let days = calendarModel.monthGrid(
-            year: config.year,
-            month: config.month,
-            today: calendarModel.today(),
-            weekRule: config.settings.weekRule
-        )
+        let days = calendarModel.monthGrid(year: config.year, month: config.month, today: calendarModel.today(), weekRule: rule)
         let titles = days.map { titleFormatter.titleParts(for: $0, settings: config.settings) }
         // One height for the whole grid: reserve the subtitle line only if any
         // day actually has one (lunar/solar term, or a holiday name even with
         // 农历 off). Otherwise the grid collapses to the compact height.
-        let showsSubtitle = titles.contains { $0.secondary != nil }
-        for row in 0..<6 {
-            let dayRowView = dayRow(row: row, days: days, titles: titles, showsSubtitle: showsSubtitle, config: config)
-            grid.addArrangedSubview(dayRowView)
-            dayRowView.widthAnchor.constraint(equalTo: grid.widthAnchor).isActive = true
+        showsSubtitle = titles.contains { $0.secondary != nil }
+        cells = days.enumerated().map { index, day in
+            dayCell(day, title: titles[index], column: index % 7, config: config)
         }
-        return grid
+        if config.settings.showWeekNumbers {
+            weekHeader = weekHeaderColumn()
+            weekLabels = stride(from: 0, to: days.count, by: 7).map { index in
+                weekLabel(String(calendarModel.weekNumber(for: days[index].date, weekRule: rule)))
+            }
+        }
+        for view in weekdayLabels + [weekHeader].compactMap({ $0 }) + cells + weekLabels {
+            view.translatesAutoresizingMaskIntoConstraints = true
+            addSubview(view)
+        }
     }
 
-    private func dayRow(row: Int, days: [CalendarDay], titles: [CalendarDayTitle], showsSubtitle: Bool, config: CalendarMonthViewConfig) -> NSView {
-        let rowDays = (0..<7).map { days[row * 7 + $0] }
-        let cells: [NSView] = (0..<7).map { column in
-            dayCell(rowDays[column], title: titles[row * 7 + column], column: column, showsSubtitle: showsSubtitle, config: config)
-        }
-        guard config.settings.showWeekNumbers, let first = rowDays.first else {
-            return gridRow(leading: nil, cells: cells)
-        }
-        let week = calendarModel.weekNumber(for: first.date, weekRule: config.settings.weekRule)
-        return gridRow(leading: weekColumn(String(week), showsSubtitle: showsSubtitle), cells: cells)
+    private var weekdayHeight: CGFloat {
+        (weekdayLabels + [weekHeader].compactMap { $0 }).map(\.intrinsicContentSize.height).max() ?? 0
     }
 
-    /// A row of 7 equal-width columns, with an optional narrow leading column
-    /// (week number) — matching the design's `26px repeat(7,1fr)` grid.
-    private func gridRow(leading: NSView?, cells: [NSView]) -> NSView {
-        let columns = NSStackView(views: cells)
-        columns.orientation = .horizontal
-        columns.distribution = .fillEqually
-        columns.spacing = Metrics.gridGap
-        guard let leading else { return columns }
-        let row = NSStackView(views: [leading, columns])
-        row.orientation = .horizontal
-        row.distribution = .fill
-        row.spacing = Metrics.gridGap
-        columns.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        return row
+    private var cellHeight: CGFloat {
+        showsSubtitle ? Metrics.cellHeight : Metrics.compactCellHeight
     }
 
-    private func dayCell(_ day: CalendarDay, title: CalendarDayTitle, column: Int, showsSubtitle: Bool, config: CalendarMonthViewConfig) -> CalendarDateCell {
+    override var intrinsicContentSize: NSSize {
+        let rows = CGFloat(cells.count / 7)
+        return NSSize(width: NSView.noIntrinsicMetric,
+                      height: weekdayHeight + Metrics.gridGap + rows * cellHeight + max(rows - 1, 0) * Metrics.gridGap)
+    }
+
+    /// Seven equal columns, with an optional narrow leading column (week
+    /// number) — matching the design's `26px repeat(7,1fr)` grid.
+    override func layout() {
+        super.layout()
+        let gap = Metrics.gridGap
+        let leading = weekHeader == nil ? 0 : Metrics.weekColumnWidth + gap
+        let columnWidth = (bounds.width - leading - 6 * gap) / 7
+        let x = { (column: Int) in leading + CGFloat(column) * (columnWidth + gap) }
+
+        let headerHeight = weekdayHeight
+        for (column, label) in weekdayLabels.enumerated() {
+            label.frame = aligned(NSRect(x: x(column), y: 0, width: columnWidth, height: headerHeight))
+        }
+        weekHeader?.frame = aligned(NSRect(x: 0, y: 0, width: Metrics.weekColumnWidth, height: headerHeight))
+
+        var y = headerHeight + gap
+        for row in 0..<(cells.count / 7) {
+            for column in 0..<7 {
+                cells[row * 7 + column].frame = aligned(NSRect(x: x(column), y: y, width: columnWidth, height: cellHeight))
+            }
+            if row < weekLabels.count { layoutWeekLabel(weekLabels[row], rowTop: y) }
+            y += cellHeight + gap
+        }
+    }
+
+    /// The week number sits where the day cell's number sits: in a box the
+    /// height of the day number, above an equal-height subtitle spacer when the
+    /// grid reserves a subtitle line, centred 1pt above the row's centre in a
+    /// tall grid. This keeps it aligned with the date number either way.
+    private func layoutWeekLabel(_ label: NSTextField, rowTop: CGFloat) {
+        let stackHeight = Self.dayNumberHeight + (showsSubtitle ? 1 + Self.daySubtitleHeight : 0)
+        let stackTop = rowTop + cellHeight / 2 - (showsSubtitle ? 1 : 0) - stackHeight / 2
+        let size = label.intrinsicContentSize
+        label.frame = aligned(NSRect(x: (Metrics.weekColumnWidth - size.width) / 2,
+                                     y: stackTop + (Self.dayNumberHeight - size.height) / 2,
+                                     width: size.width, height: size.height))
+    }
+
+    private func aligned(_ rect: NSRect) -> NSRect {
+        backingAlignedRect(rect, options: .alignAllEdgesNearest)
+    }
+
+    private func dayCell(_ day: CalendarDay, title: CalendarDayTitle, column: Int, config: CalendarMonthViewConfig) -> CalendarDateCell {
         let state = CalendarDateCellState(
             title: title,
             isToday: day.isToday,
@@ -149,8 +167,15 @@ final class CalendarMonthView: NSStackView {
         item.alignment = .center
         item.font = Typography.mono(10)
         item.textColor = Palette.ink4
-        item.widthAnchor.constraint(equalToConstant: Metrics.weekColumnWidth).isActive = true
         return item
+    }
+
+    private func weekLabel(_ text: String) -> NSTextField {
+        let label = NSTextField(labelWithString: text)
+        label.alignment = .center
+        label.font = Typography.mono(10)
+        label.textColor = Palette.ink4
+        return label
     }
 
     // Intrinsic heights of the day cell's two label lines, measured once so the
@@ -162,52 +187,6 @@ final class CalendarMonthView: NSStackView {
         let label = NSTextField(labelWithString: "8")
         label.font = font
         return label.intrinsicContentSize.height
-    }
-
-    /// The week number, laid out to mirror the day cell's number: it sits in a
-    /// box the height of the day number, above an equal-height subtitle spacer
-    /// (only when the grid reserves a subtitle line), centered with the same
-    /// offset. This keeps the week number aligned with the date number whether
-    /// the grid is tall (lunar/holiday present) or compact.
-    private func weekColumn(_ text: String, showsSubtitle: Bool) -> NSView {
-        let label = NSTextField(labelWithString: text)
-        label.alignment = .center
-        label.font = Typography.mono(10)
-        label.textColor = Palette.ink4
-        label.translatesAutoresizingMaskIntoConstraints = false
-
-        let numberBox = NSView()
-        numberBox.translatesAutoresizingMaskIntoConstraints = false
-        numberBox.addSubview(label)
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: numberBox.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: numberBox.centerYAnchor),
-            numberBox.heightAnchor.constraint(equalToConstant: Self.dayNumberHeight)
-        ])
-
-        let stack = NSStackView(views: [numberBox])
-        stack.orientation = .vertical
-        stack.alignment = .centerX
-        stack.spacing = 1
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        if showsSubtitle {
-            let spacer = NSView()
-            spacer.translatesAutoresizingMaskIntoConstraints = false
-            spacer.heightAnchor.constraint(equalToConstant: Self.daySubtitleHeight).isActive = true
-            stack.addArrangedSubview(spacer)
-        }
-
-        let container = NSView()
-        container.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(stack)
-        NSLayoutConstraint.activate([
-            container.widthAnchor.constraint(equalToConstant: Metrics.weekColumnWidth),
-            container.heightAnchor.constraint(equalToConstant: showsSubtitle ? Metrics.cellHeight : Metrics.compactCellHeight),
-            stack.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            // Matches CalendarDateCell's label-stack offset (-1 tall, 0 compact).
-            stack.centerYAnchor.constraint(equalTo: container.centerYAnchor, constant: showsSubtitle ? -1 : 0)
-        ])
-        return container
     }
 
     @objc private func selectDate(_ sender: CalendarDateCell) {

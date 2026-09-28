@@ -15,23 +15,23 @@ extension CalendarDateCell {
         guard !colors.isEmpty else { return }
 
         calendarDotColors = colors
-        let row = NSStackView()
-        row.orientation = .horizontal
-        row.spacing = 3
-        row.alignment = .centerY
-        row.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(row)
         for color in colors {
             let dot = UI.roundedBox(fill: color, radius: 999)
             dot.alphaValue = state.isToday ? 0.9 : 0.82
-            dot.widthAnchor.constraint(equalToConstant: 4).isActive = true
-            dot.heightAnchor.constraint(equalToConstant: 4).isActive = true
-            row.addArrangedSubview(dot)
+            dot.translatesAutoresizingMaskIntoConstraints = true
+            addSubview(dot)
             calendarDots.append(dot)
         }
-        NSLayoutConstraint.activate([
-            row.centerXAnchor.constraint(equalTo: centerXAnchor),
-            row.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4)
-        ])
+    }
+
+    /// Dots centred horizontally, their bottom 4pt above the cell's.
+    func layoutCalendarDots() {
+        let size: CGFloat = 4, spacing: CGFloat = 3
+        let count = CGFloat(calendarDots.count)
+        var x = bounds.midX - (count * size + max(count - 1, 0) * spacing) / 2
+        for dot in calendarDots {
+            dot.frame = aligned(NSRect(x: x, y: bounds.maxY - 4 - size, width: size, height: size))
+            x += size + spacing
+        }
     }
 }

@@ -45,6 +45,16 @@ final class CalendarDateCell: NSControl {
     var calendarDotColors: [NSColor] = []
     private let dayLabel = NSTextField(labelWithString: "")
     private let subtitleLabel = NSTextField(labelWithString: "")
+    private var badge: NSTextField?
+
+    // Laid out by frame in `layout()`: a label stack and dot row per cell,
+    // times 42 cells, cost ~40ms of Auto Layout on every render.
+    override var isFlipped: Bool { true }
+
+    override var intrinsicContentSize: NSSize {
+        let showsSubtitle = state?.showsSubtitle ?? true
+        return NSSize(width: NSView.noIntrinsicMetric, height: showsSubtitle ? Metrics.cellHeight : Metrics.compactCellHeight)
+    }
 
     init(state: CalendarDateCellState, target: AnyObject?, action: Selector) {
         super.init(frame: .zero)
@@ -68,6 +78,14 @@ final class CalendarDateCell: NSControl {
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
         if let state { applyColors(state) }
+        // Frames are computed once per size; the prewarmed popover lays out
+        // before it has a window, so entering one must redo them.
+        needsLayout = true
+    }
+
+    override func viewDidChangeBackingProperties() {
+        super.viewDidChangeBackingProperties()
+        needsLayout = true
     }
 
     override func updateTrackingAreas() {
@@ -110,11 +128,44 @@ final class CalendarDateCell: NSControl {
         configureLabels(state)
         configureCalendarDots(state)
         if state.title.isWorkday {
-            CalendarWorkdayBadge.add(to: self, color: state.isToday ? Palette.accentInk : Palette.ink2)
+            let badge = CalendarWorkdayBadge.make(color: state.isToday ? Palette.accentInk : Palette.ink2)
+            addSubview(badge)
+            self.badge = badge
         }
         applyColors(state)
-        widthAnchor.constraint(greaterThanOrEqualToConstant: 40).isActive = true
-        heightAnchor.constraint(equalToConstant: state.showsSubtitle ? Metrics.cellHeight : Metrics.compactCellHeight).isActive = true
+    }
+
+    /// Frame layout reproducing the former constraints: the number (and the
+    /// subtitle below it, 1pt apart) centred as one block — 1pt above centre in
+    /// a tall cell — kept 2pt inside the edges; dots centred 4pt above the
+    /// bottom; the workday badge in the top-trailing corner.
+    override func layout() {
+        super.layout()
+        let showsSubtitle = state?.showsSubtitle ?? true
+        let maxWidth = max(bounds.width - 4, 0)
+        let daySize = dayLabel.intrinsicContentSize
+        var subtitleSize = showsSubtitle ? subtitleLabel.intrinsicContentSize : .zero
+        subtitleSize.width = min(subtitleSize.width, maxWidth)
+        let stackHeight = daySize.height + (showsSubtitle ? 1 + subtitleSize.height : 0)
+        let stackTop = bounds.midY - (showsSubtitle ? 1 : 0) - stackHeight / 2
+        // Labels span the usable width with centred text rather than hugging a
+        // measured text width, which truncated to "…" when the measurement
+        // taken before the popover had a window was a hair short once drawn.
+        dayLabel.frame = aligned(NSRect(x: bounds.midX - maxWidth / 2, y: stackTop, width: maxWidth, height: daySize.height))
+        if showsSubtitle {
+            // Full cell width, as in the Luna cell: holiday names need every
+            // point the column has once drawn in the popover.
+            subtitleLabel.frame = aligned(NSRect(x: 0, y: stackTop + daySize.height + 1,
+                                                 width: bounds.width, height: subtitleSize.height))
+        }
+        layoutCalendarDots()
+        if let badge {
+            badge.frame = aligned(CalendarWorkdayBadge.frame(for: badge, in: bounds, flipped: true))
+        }
+    }
+
+    func aligned(_ rect: NSRect) -> NSRect {
+        backingAlignedRect(rect, options: .alignAllEdgesNearest)
     }
 
     private func applyColors(_ state: CalendarDateCellState) {
@@ -136,47 +187,22 @@ final class CalendarDateCell: NSControl {
     }
 
     private func configureLabels(_ state: CalendarDateCellState) {
-        let stack = NSStackView()
-        stack.orientation = .vertical
-        stack.alignment = .centerX
-        stack.spacing = 1
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(stack)
-
         dayLabel.stringValue = state.title.primary
         dayLabel.font = Typography.mono(15, .medium)
+        dayLabel.alignment = .center
         dayLabel.textColor = numberColor(state)
-        stack.addArrangedSubview(dayLabel)
+        addSubview(dayLabel)
 
         // Compact grids (no subtitle anywhere) omit the second line entirely so
         // the number sits centered in a shorter cell.
-        guard state.showsSubtitle else {
-            NSLayoutConstraint.activate([
-                stack.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 2),
-                stack.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -2),
-                stack.centerXAnchor.constraint(equalTo: centerXAnchor),
-                stack.centerYAnchor.constraint(equalTo: centerYAnchor)
-            ])
-            return
-        }
-
+        guard state.showsSubtitle else { return }
         subtitleLabel.stringValue = state.title.secondary ?? ""
         subtitleLabel.font = Typography.sans(10, state.title.isSolarTerm ? .semibold : .regular)
         subtitleLabel.lineBreakMode = .byTruncatingTail
         subtitleLabel.maximumNumberOfLines = 1
+        subtitleLabel.alignment = .center
         subtitleLabel.textColor = subtitleColor(state)
-        subtitleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-
-        stack.addArrangedSubview(subtitleLabel)
-        NSLayoutConstraint.activate([
-            stack.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 2),
-            stack.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -2),
-            stack.centerXAnchor.constraint(equalTo: centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -1),
-            subtitleLabel.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -4),
-            subtitleLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 2),
-            subtitleLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -2)
-        ])
+        addSubview(subtitleLabel)
     }
 
     private func numberColor(_ state: CalendarDateCellState) -> NSColor {
