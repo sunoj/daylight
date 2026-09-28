@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.5] - 2026-09-28
+
+### Improved
+- The calendar opens faster on the first click after launch, and moving between months is smoother.
+
+### Fixed
+- A long diary note no longer widens the calendar. It wraps onto several lines.
+- Days with many diary notes now scroll instead of overlapping.
+- The moon phase line and location messages now appear in the selected language.
+- Settings shows the app's current version.
+
 ## [2.0.4] - 2026-09-26
 
 ### Fixed
