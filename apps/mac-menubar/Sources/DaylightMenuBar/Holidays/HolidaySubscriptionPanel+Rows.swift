@@ -180,7 +180,7 @@ extension HolidaySubscriptionPanel {
     }
 
     func symbol(_ name: String, _ color: NSColor) -> NSImageView {
-        let view = NSImageView(image: NSImage(systemSymbolName: name, accessibilityDescription: name) ?? NSImage())
+        let view = NSImageView(image: NSImage(systemSymbolName: name, accessibilityDescription: SymbolLabels.description(for: name)) ?? NSImage())
         view.contentTintColor = color
         return view
     }

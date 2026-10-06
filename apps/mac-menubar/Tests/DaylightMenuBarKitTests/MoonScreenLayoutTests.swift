@@ -15,7 +15,7 @@ final class MoonScreenLayoutTests: XCTestCase {
         // Regression: the pills pinned their width to the panel before being
         // added to it. Activating a constraint across two views with no common
         // ancestor throws, and the whole prompt came up blank.
-        let panel = LocationPromptPanel(onAllow: {}, onSkip: {})
+        let panel = LocationPromptPanel(onAllow: {})
         XCTAssertGreaterThan(fittingHeight(of: panel), 1)
     }
 

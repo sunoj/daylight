@@ -7,6 +7,11 @@ import XCTest
 @testable import DaylightMenuBarKit
 
 final class EventListSectionsTests: XCTestCase {
+    // Row ids carry the displayed holiday name, which follows the UI language.
+    private var previousLanguage = Loc.language
+    override func setUp() { previousLanguage = Loc.language; Loc.language = .zh }
+    override func tearDown() { Loc.language = previousLanguage }
+
     func testAllDayEventsAreSeparatedAndSortedByTitle() {
         let now = Date(timeIntervalSince1970: 1_000)
         let events = [

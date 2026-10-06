@@ -8,13 +8,33 @@ import XCTest
 @testable import DaylightMenuBarKit
 
 final class DaylightStoreTests: XCTestCase {
-    func testDefaultSettingsUseIsoCalendarWithVisibleLunarAndWeekNumbers() {
+    func testDefaultSettingsFollowTheSystemLanguageAndRegion() {
         let settings = DaylightStore(defaults: isolatedDefaults()).settings()
+        let expected = UserSettings.firstLaunch()
 
-        XCTAssertTrue(settings.showLunarDate)
+        XCTAssertEqual(settings.showLunarDate, expected.showLunarDate)
+        XCTAssertEqual(settings.statusSegments, expected.statusSegments)
+        XCTAssertEqual(settings.statusUse24HourTime, expected.use24Hour)
+        XCTAssertEqual(settings.weekRule, expected.weekRule)
         XCTAssertTrue(settings.showWeekNumbers)
         XCTAssertEqual(settings.colorScheme, "system")
-        XCTAssertEqual(settings.weekRule, .iso8601)
+    }
+
+    /// Lunar text is Chinese, so only Chinese users start with it (Guideline 4).
+    func testFirstLaunchDefaultsPerLanguage() {
+        let mainland = UserSettings.firstLaunch(language: .zh, locale: Locale(identifier: "zh_CN"))
+        XCTAssertEqual(mainland, FirstLaunchDefaults(showLunarDate: true, statusSegments: ["moon", "lunar"], use24Hour: true, weekRule: .iso8601))
+        let taiwan = UserSettings.firstLaunch(language: .zhHant, locale: Locale(identifier: "zh_TW"))
+        XCTAssertTrue(taiwan.showLunarDate)
+        XCTAssertEqual(taiwan.statusSegments, ["moon", "lunar"])
+        let american = UserSettings.firstLaunch(language: .en, locale: Locale(identifier: "en_US"))
+        XCTAssertEqual(american, FirstLaunchDefaults(showLunarDate: false, statusSegments: ["moon", "dateBox"], use24Hour: false, weekRule: .us))
+        let british = UserSettings.firstLaunch(language: .en, locale: Locale(identifier: "en_GB"))
+        XCTAssertTrue(british.use24Hour)
+        XCTAssertEqual(british.weekRule, .iso8601)
+        let thai = UserSettings.firstLaunch(language: .th, locale: Locale(identifier: "th_TH"))
+        XCTAssertFalse(thai.showLunarDate)
+        XCTAssertEqual(thai.statusSegments, ["moon", "dateBox"])
     }
 
     func testSettingsPreservePresentValuesWhenStoredPayloadOmitsKeys() {

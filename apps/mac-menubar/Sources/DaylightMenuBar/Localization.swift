@@ -45,6 +45,15 @@ enum Loc {
         return table[zh]?[language] ?? zh
     }
 
+    /// A holiday name from a feed. Mainland feeds join overlapping holidays
+    /// with 、 (国庆节、中秋节), so each part is translated on its own.
+    static func holidayName(_ name: String) -> String {
+        let parts = name.components(separatedBy: "、")
+        guard parts.count > 1 else { return t(name) }
+        let separator = language == .zh || language == .zhHant ? "、" : " / "
+        return parts.map(t).joined(separator: separator)
+    }
+
     /// Calendar-era display year: Thai shows the Buddhist Era (CE + 543).
     /// Display-only — navigation and grouping stay Gregorian.
     static func displayYear(_ year: Int) -> Int {
@@ -119,7 +128,26 @@ enum Loc {
         return list[(index % 7 + 7) % 7]
     }
 
-    private static let table: [String: [AppLanguage: String]] = [
+    // Internal (not private) so LocalizationComplianceTests can check coverage.
+    static let table: [String: [AppLanguage: String]] = baseTable.merging(updaterTable) { current, _ in current }
+
+    /// Sparkle updater copy. The App Store build has no updater, so these
+    /// strings stay out of its binary entirely (Guideline 2.4.5(vii)).
+    #if APP_STORE
+    private static let updaterTable: [String: [AppLanguage: String]] = [:]
+    #else
+    private static let updaterTable: [String: [AppLanguage: String]] = [
+        "检查更新": [.en: "Check for updates", .th: "ตรวจหาการอัปเดต"],
+        "此构建不包含自动更新": [.en: "Updates unavailable in this build", .th: "บิลด์นี้ไม่รองรับการอัปเดตอัตโนมัติ"],
+        "本地构建未包含自动更新组件。前往下载页面获取最新版本？": [
+            .en: "Auto-update isn't available in this local build of Daylight. Open the download page instead?",
+            .th: "บิลด์ในเครื่องนี้ไม่มีตัวอัปเดตอัตโนมัติ เปิดหน้าดาวน์โหลดแทนหรือไม่?",
+        ],
+        "前往下载": [.en: "Download", .th: "ดาวน์โหลด"]
+    ]
+    #endif
+
+    private static let baseTable: [String: [AppLanguage: String]] = [
         // Main / quick diary
         "记一笔今天…": [.en: "Note today…", .th: "บันทึกวันนี้…"],
         "保存": [.en: "Save", .th: "บันทึก"],
@@ -164,9 +192,9 @@ enum Loc {
         "今天没有日程": [.en: "No events today", .th: "วันนี้ไม่มีกิจกรรม"],
         "没有日程": [.en: "No events", .th: "ไม่มีกิจกรรม"],
         "已连接": [.en: "Connected", .th: "เชื่อมต่อแล้ว"],
-        "授权访问日历": [.en: "Authorize calendar access", .th: "อนุญาตปฏิทิน"],
+        "继续": [.en: "Continue", .th: "ดำเนินการต่อ"],
         "在日历中打开": [.en: "Open in Calendar", .th: "เปิดในปฏิทิน"],
-        "允许访问系统日历": [.en: "Allow access to your system calendars", .th: "อนุญาตให้เข้าถึงปฏิทินระบบ"],
+        "显示系统日历中的日程": [.en: "Show events from your system calendars", .th: "แสดงกิจกรรมจากปฏิทินระบบ"],
         "现在": [.en: "Now", .th: "ตอนนี้"],
         "个日历": [.en: "calendars", .th: "ปฏิทิน"],
         // Prefix for the footer countdown in languages that lead with it
@@ -193,18 +221,31 @@ enum Loc {
         "订阅节假日": [.en: "Holidays", .th: "วันหยุด"],
         "未订阅": [.en: "Not subscribed", .th: "ยังไม่สมัคร"],
         "导出日记": [.en: "Export diary", .th: "ส่งออกไดอารี่"],
-        "检查更新": [.en: "Check for updates", .th: "ตรวจหาการอัปเดต"],
-        "此构建不包含自动更新": [.en: "Updates unavailable in this build", .th: "บิลด์นี้ไม่รองรับการอัปเดตอัตโนมัติ"],
-        "本地构建未包含自动更新组件。前往下载页面获取最新版本？": [
-            .en: "Auto-update isn't available in this local build of Daylight. Open the download page instead?",
-            .th: "บิลด์ในเครื่องนี้ไม่มีตัวอัปเดตอัตโนมัติ เปิดหน้าดาวน์โหลดแทนหรือไม่?",
-        ],
-        "前往下载": [.en: "Download", .th: "ดาวน์โหลด"],
         "取消": [.en: "Cancel", .th: "ยกเลิก"],
         "关于": [.en: "About", .th: "เกี่ยวกับ"],
+        "隐私政策": [.en: "Privacy Policy", .th: "นโยบายความเป็นส่วนตัว"],
+        "帮助与支持": [.en: "Help & Support", .th: "ความช่วยเหลือและการสนับสนุน"],
+        "周六": [.en: "Sat", .th: "เสาร์"],
+        "昼间日历": [.en: "Daylight", .th: "Daylight"],
+        // Hidden main menu (key equivalents) and icon-only control names
+        "编辑": [.en: "Edit", .th: "แก้ไข"],
+        "撤销": [.en: "Undo", .th: "เลิกทำ"],
+        "重做": [.en: "Redo", .th: "ทำซ้ำ"],
+        "剪切": [.en: "Cut", .th: "ตัด"],
+        "复制": [.en: "Copy", .th: "คัดลอก"],
+        "全选": [.en: "Select All", .th: "เลือกทั้งหมด"],
+        "上一页": [.en: "Previous", .th: "ก่อนหน้า"],
+        "下一页": [.en: "Next", .th: "ถัดไป"],
+        "上移": [.en: "Move up", .th: "เลื่อนขึ้น"],
+        "下移": [.en: "Move down", .th: "เลื่อนลง"],
+        "移除": [.en: "Remove", .th: "นำออก"],
+        "添加": [.en: "Add", .th: "เพิ่ม"],
+        "记一笔": [.en: "New note", .th: "จดบันทึก"],
+        "关闭": [.en: "Close", .th: "ปิด"],
+        "返回": [.en: "Back", .th: "กลับ"],
+        "月球模型：NASA": [.en: "Moon model: NASA", .th: "โมเดลดวงจันทร์: NASA"],
         "退出 Daylight": [.en: "Quit Daylight", .th: "ออกจาก Daylight"],
         "版本": [.en: "Version", .th: "เวอร์ชัน"],
-        "昼间 · 100% 本地计算 · 无网络请求": [.en: "Daylight · 100% on-device · No network", .th: "Daylight · คำนวณในเครื่อง · ไม่ใช้เน็ต"],
         "无": [.en: "None", .th: "ไม่มี"],
         // Status editor
         "状态栏": [.en: "Status Bar", .th: "แถบสถานะ"],
@@ -240,8 +281,6 @@ enum Loc {
         ],
         "仅本地计算": [.en: "On-device only", .th: "ในเครื่องเท่านั้น"],
         "可随时关闭": [.en: "Off anytime", .th: "ปิดได้ทุกเมื่อ"],
-        "允许使用定位": [.en: "Allow location", .th: "อนุญาตตำแหน่ง"],
-        "暂不开启": [.en: "Not now", .th: "ไม่ใช่ตอนนี้"],
         // 3D moon
         "3D 月相": [.en: "3D Moon", .th: "ดวงจันทร์ 3D"],
         "正在获取位置…": [.en: "Locating…", .th: "กำลังระบุตำแหน่ง…"],
@@ -269,14 +308,20 @@ enum Loc {
         "同步失败 · 请检查网络或链接": [.en: "Sync failed · check network or URL", .th: "ซิงค์ล้มเหลว · ตรวจสอบเน็ตหรือลิงก์"],
         "中国大陆": [.en: "Mainland China", .th: "จีนแผ่นดินใหญ่"],
         "中国香港特别行政区": [.en: "Hong Kong SAR", .th: "ฮ่องกง"],
-        "中国台湾": [.en: "Taiwan, China", .th: "ไต้หวัน"],
         "泰国": [.en: "Thailand", .th: "ประเทศไทย"],
         "officeholidays.com": [.en: "officeholidays.com", .th: "officeholidays.com"],
-        "自定义 iCal 链接": [.en: "Custom iCal URL", .th: "ลิงก์ iCal เอง"],
-        "国务院办公厅 · 官方公告": [.en: "State Council · official", .th: "คณะรัฐมนตรี · ทางการ"],
+        "自定义订阅链接": [.en: "Custom calendar URL", .th: "ลิงก์ปฏิทินที่กำหนดเอง"],
+        "依据国务院办公厅通知": [.en: "Based on State Council notices", .th: "อ้างอิงประกาศของคณะรัฐมนตรีจีน"],
+        // Mainland China holiday names, as the holidays.mings.work feed spells them
+        "元旦": [.en: "New Year's Day", .th: "วันขึ้นปีใหม่"],
+        "春节": [.en: "Spring Festival", .th: "ตรุษจีน"],
+        "清明节": [.en: "Qingming Festival", .th: "เทศกาลเชงเม้ง"],
+        "劳动节": [.en: "Labour Day", .th: "วันแรงงาน"],
+        "端午节": [.en: "Dragon Boat Festival", .th: "เทศกาลบ๊ะจ่าง"],
+        "中秋节": [.en: "Mid-Autumn Festival", .th: "เทศกาลไหว้พระจันทร์"],
+        "国庆节": [.en: "National Day", .th: "วันชาติจีน"],
         "GovHK 官方日历": [.en: "GovHK official calendar", .th: "ปฏิทินทางการ GovHK"],
         "GovHK 公众假期": [.en: "GovHK public holidays", .th: "วันหยุด GovHK"],
-        "行政院人事行政总处": [.en: "Executive Yuan DGPA", .th: "สำนักบริหารไต้หวัน"],
         "粘贴任意 .ics 订阅地址": [.en: "Paste any .ics URL", .th: "วางลิงก์ .ics ใดก็ได้"],
         "铁锈": [.en: "Rust", .th: "สนิม"],
         "石蓝": [.en: "Stone", .th: "สโตน"],

@@ -172,9 +172,12 @@ final class EventListPanel: NSView {
     }
 
     private func authorizationView() -> NSView {
-        let copy = UI.label(L("允许访问系统日历"), font: Typography.sans(12.5), color: Palette.eventInk3, align: .center)
+        let copy = UI.label(L("显示系统日历中的日程"), font: Typography.sans(12.5), color: Palette.eventInk3, align: .center)
+        // Once the system dialog has been answered the button can only open
+        // System Settings, so say that instead of "Continue".
+        let title = authorization == .notDetermined ? L("继续") : L("打开系统设置")
         let button = UI.filledButton(
-            L("授权访问日历"), target: self, action: #selector(requestAccess), height: 30,
+            title, target: self, action: #selector(requestAccess), height: 30,
             fill: Palette.eventInk, titleColor: Palette.eventPanel
         )
         let column = NSStackView(views: [copy, button])
@@ -315,7 +318,7 @@ final class EventListPanel: NSView {
     }
 
     private func glyph(_ symbol: String) -> NSImageView {
-        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: symbol)?
+        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: SymbolLabels.description(for: symbol))?
             .withSymbolConfiguration(.init(pointSize: 11, weight: .medium))
         let view = NSImageView(image: image ?? NSImage())
         view.contentTintColor = Palette.eventInk2

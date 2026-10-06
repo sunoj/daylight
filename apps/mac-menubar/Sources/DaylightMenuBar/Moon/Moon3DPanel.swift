@@ -33,6 +33,7 @@ final class Moon3DPanel: NSStackView {
     private let phaseLabel = NSTextField(labelWithString: "")
     private let detailLabel = NSTextField(labelWithString: "")
     private let statusLabel = NSTextField(labelWithString: "")
+    private lazy var settingsButton = UI.filledButton(L("打开系统设置"), target: self, action: #selector(openLocationSettings), height: 26)
 
     init(displayDate: LocalDate, requestLocation: Bool, store: DaylightStore = DaylightStore(), onClose: @escaping () -> Void) {
         self.displayDate = displayDate
@@ -75,7 +76,7 @@ final class Moon3DPanel: NSStackView {
         let tile = UI.roundedBox(fill: Palette.surface2, radius: 14)
         tile.widthAnchor.constraint(equalToConstant: 28).isActive = true
         tile.heightAnchor.constraint(equalToConstant: 28).isActive = true
-        let glyph = NSImageView(image: NSImage(systemSymbolName: "chevron.left", accessibilityDescription: "Back") ?? NSImage())
+        let glyph = NSImageView(image: NSImage(systemSymbolName: "chevron.left", accessibilityDescription: L("返回")) ?? NSImage())
         glyph.contentTintColor = Palette.ink2
         glyph.translatesAutoresizingMaskIntoConstraints = false
         tile.addSubview(glyph)
@@ -113,8 +114,12 @@ final class Moon3DPanel: NSStackView {
     private func statusRow() -> NSView {
         statusLabel.font = Typography.mono(10.5)
         statusLabel.textColor = Palette.ink4
-        let row = NSStackView(views: [statusLabel])
+        // NASA's Goddard SVS asks for credit on the LRO moon model.
+        let credit = UI.label(L("月球模型：NASA"), font: Typography.mono(10.5), color: Palette.ink4)
+        settingsButton.isHidden = true
+        let row = NSStackView(views: [statusLabel, settingsButton, spacer(), credit])
         row.orientation = .horizontal
+        row.spacing = 8
         row.edgeInsets = NSEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
         return row
     }
@@ -187,8 +192,15 @@ final class Moon3DPanel: NSStackView {
         )
         phaseLabel.stringValue = MoonNames.phaseCN(observation.phaseAngleDegrees)
         let percent = Int((observation.illuminatedFraction * 100).rounded())
-        detailLabel.stringValue = "\(percent)% \(L("照亮")) · \(L("月龄")) \(fmt(observation.ageDays))d\nAlt \(fmt(observation.altitudeDegrees))° · Az \(fmt(observation.azimuthDegrees))°"
+        let phase = "\(percent)% \(L("照亮")) · \(L("月龄")) \(fmt(observation.ageDays))d"
+        // Altitude and azimuth are only meaningful for a real observer.
+        if case .authorized = state {
+            detailLabel.stringValue = "\(phase)\nAlt \(fmt(observation.altitudeDegrees))° · Az \(fmt(observation.azimuthDegrees))°"
+        } else {
+            detailLabel.stringValue = phase
+        }
         statusLabel.stringValue = statusText(state)
+        settingsButton.isHidden = state != .unavailable(LocationService.deniedReason)
         moonNode.eulerAngles = SCNVector3(0, 0, Float(observation.parallacticAngleDegrees * .pi / 180))
         // +180° so a full moon (phase 180°) lights the face toward the camera.
         sunNode.eulerAngles = SCNVector3(0, Float((observation.phaseAngleDegrees + 180) * .pi / 180), 0)
@@ -210,4 +222,8 @@ final class Moon3DPanel: NSStackView {
     private func fmt(_ value: Double) -> String { String(format: "%.1f", value) }
 
     @objc private func close() { onClose() }
+    @objc private func openLocationSettings() {
+        guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices") else { return }
+        NSWorkspace.shared.open(url)
+    }
 }

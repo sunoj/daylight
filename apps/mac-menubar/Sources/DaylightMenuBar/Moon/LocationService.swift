@@ -27,10 +27,11 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
     var onStateChanged: ((LocationState) -> Void)?
 
     static let observerLocationCacheTTL: TimeInterval = 7 * 24 * 60 * 60
+    static let deniedReason = "定位权限已关闭"
 
     private let store: DaylightStore
     private let now: () -> Date
-    private let manager = CLLocationManager()
+    private let manager: CLLocationManager
     private var hasStarted = false
 
     static func needsPermissionPrompt(store: DaylightStore, now: Date = Date()) -> Bool {
@@ -49,21 +50,23 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
     static func resolution(for authorizationStatus: CLAuthorizationStatus, cachedLocation: ObserverLocation?) -> LocationStartResolution {
         switch authorizationStatus {
         case .notDetermined:
-            if let cachedLocation { return .useCached(cachedLocation) }
+            // A coordinate cached under an earlier grant (before a reinstall or
+            // a privacy reset) must not stand in for asking again.
             return .needsPrompt
         case .authorizedAlways, .authorizedWhenInUse:
             return .requestLive
         case .denied, .restricted:
             // A revoked permission must not be bypassed with a stored coordinate.
-            return .unavailable("定位权限已关闭")
+            return .unavailable(deniedReason)
         @unknown default:
             return .unavailable("定位状态未知")
         }
     }
 
-    init(store: DaylightStore = DaylightStore(), now: @escaping () -> Date = Date.init) {
+    init(store: DaylightStore = DaylightStore(), now: @escaping () -> Date = Date.init, manager: CLLocationManager = CLLocationManager()) {
         self.store = store
         self.now = now
+        self.manager = manager
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
@@ -74,6 +77,7 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         let cachedLocation = Self.freshCachedObserverLocation(from: store, now: now())
         switch Self.resolution(for: manager.authorizationStatus, cachedLocation: cachedLocation) {
         case .needsPrompt:
+            store.clearObserverLocation()
             onStateChanged?(.waiting)
             manager.requestWhenInUseAuthorization()
         case let .useCached(location):
@@ -94,6 +98,9 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        // CoreLocation calls this as soon as the delegate is set. Before the user
+        // chose Continue it must not start, or it would raise the system prompt.
+        guard hasStarted else { return }
         start()
     }
 

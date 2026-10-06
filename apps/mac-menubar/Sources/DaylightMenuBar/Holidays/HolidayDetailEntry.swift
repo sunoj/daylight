@@ -47,10 +47,10 @@ enum HolidayDetailEntries {
     private static func sourceName(for subscription: HolidaySubscription) -> String {
         if subscription.sourceId == "custom" {
             let name = subscription.name.trimmingCharacters(in: .whitespacesAndNewlines)
-            return name.isEmpty ? "自定义 iCal 链接" : name
+            return name.isEmpty ? "自定义订阅链接" : name
         }
         let sourceId = subscription.sourceId
-        return HolidayService.preset(sourceId)?.name ?? (sourceId == "custom" ? "自定义 iCal 链接" : sourceId)
+        return HolidayService.preset(sourceId)?.name ?? (sourceId == "custom" ? "自定义订阅链接" : sourceId)
     }
 
     private static func normalizedName(_ name: String?) -> String? {

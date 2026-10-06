@@ -1,0 +1,5 @@
+/* Permission prompts shown by macOS. Keep in sync with the other .lproj copies. */
+"NSCalendarsUsageDescription" = "「晝間」讀取你的系統日曆，用於在日曆網格上標出有行程的日子並列出當天的安排。資料僅在本機使用，不會上傳。";
+"NSCalendarsFullAccessUsageDescription" = "「晝間」只讀取你的系統日曆，用於在日曆網格上標出有行程的日子並列出當天的安排。資料僅在本機使用，不會上傳。";
+"NSLocationUsageDescription" = "「晝間」僅在你開啟 3D 月相模型時使用你的位置，用於計算當地觀測的月亮高度角、方位角與相位朝向。簡單月相無需定位。";
+"NSLocationWhenInUseUsageDescription" = "「晝間」僅在你開啟 3D 月相模型時使用你的位置，用於計算當地觀測的月亮高度角、方位角與相位朝向。簡單月相無需定位。";

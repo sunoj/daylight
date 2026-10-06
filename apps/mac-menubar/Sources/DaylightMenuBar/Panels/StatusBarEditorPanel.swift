@@ -117,7 +117,7 @@ final class StatusBarEditorPanel: NSStackView {
         let up = iconButton("chevron.up", id: id, action: #selector(moveSegmentUp), enabled: index > 0)
         let down = iconButton("chevron.down", id: id, action: #selector(moveSegmentDown), enabled: index < count - 1)
         let remove = iconButton("minus.circle", id: id, action: #selector(removeSegment), enabled: true)
-        let row = NSStackView(views: [orderGlyph(), name, spacer(), up, down, remove])
+        let row = NSStackView(views: [name, spacer(), up, down, remove])
         row.orientation = .horizontal
         row.spacing = 10
         row.alignment = .centerY
@@ -168,18 +168,10 @@ final class StatusBarEditorPanel: NSStackView {
         return UI.card(stack)
     }
 
-    private func orderGlyph() -> NSView {
-        let image = NSImage(systemSymbolName: "line.3.horizontal", accessibilityDescription: nil)?
-            .withSymbolConfiguration(.init(pointSize: 12, weight: .regular))
-        let view = NSImageView(image: image ?? NSImage())
-        view.contentTintColor = Palette.ink4
-        return view
-    }
-
     private func iconButton(_ symbol: String, id: String, action: Selector, enabled: Bool) -> NSView {
         let button = SegmentButton(target: self, action: action)
         button.segmentId = id
-        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: symbol)?
+        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: SymbolLabels.description(for: symbol))?
             .withSymbolConfiguration(.init(pointSize: 16, weight: .regular))
         let view = NSImageView(image: image ?? NSImage())
         view.contentTintColor = enabled ? Palette.ink2 : Palette.ink4

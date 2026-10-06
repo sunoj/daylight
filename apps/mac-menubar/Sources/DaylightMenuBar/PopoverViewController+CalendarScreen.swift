@@ -158,7 +158,7 @@ extension PopoverViewController {
         let box = UI.roundedBox(fill: Palette.surface2, radius: Metrics.tileRadius)
         box.widthAnchor.constraint(equalToConstant: 30).isActive = true
         box.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: symbol)?
+        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: SymbolLabels.description(for: symbol))?
             .withSymbolConfiguration(.init(pointSize: 14, weight: .medium))
         let glyph = NSImageView(image: image ?? NSImage())
         glyph.contentTintColor = Palette.ink2

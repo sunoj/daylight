@@ -20,9 +20,12 @@ final class MoonObservationCalculator {
 
     func observation(at date: Date, location: ObserverLocation) -> ObservedMoonPhase {
         let jd = julianDate(from: date)
+        // The sun series is J2000-based (JD 2451545.0); the moon's elements are
+        // Schlyter's, whose day 0 is 2000 Jan 0.0 (JD 2451543.5). Feeding both
+        // the J2000 count put the moon ~1.5 days behind the sky.
         let days = jd - 2_451_545.0
         let sunLongitude = sunEclipticLongitude(days)
-        let moon = moonCoordinates(days)
+        let moon = moonCoordinates(jd - 2_451_543.5)
         let phaseAngle = normalizeDegrees(moon.longitudeDegrees - sunLongitude)
         let horizontal = horizontalCoordinates(jd: jd, moon: moon, location: location)
         return ObservedMoonPhase(

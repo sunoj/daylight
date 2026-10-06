@@ -58,6 +58,8 @@ final class PopoverViewController: NSViewController {
     private var toastTimer: Timer?
     private var popoverWidthConstraint: NSLayoutConstraint!
     private var lastRenderState: PopoverRenderState?
+    private var renderedToday: LocalDate?
+    private var renderedAt: Date?
     private var transitionOverlay: NSImageView?
     private lazy var renderCoalescer = RenderCoalescer { [weak self] in
         self?.renderOnce()
@@ -120,6 +122,25 @@ final class PopoverViewController: NSViewController {
         renderCoalescer.request()
     }
 
+    /// Called right before the popover is shown. The view is built once and
+    /// kept, so "today", the agenda and the next-event countdown would
+    /// otherwise show whatever was true when it was last drawn.
+    func refreshForPresentation(now: Date = Date()) {
+        guard isViewLoaded else { return }
+        let today = calendarModel.today()
+        if let renderedToday, renderedToday != today {
+            if selectedDate == renderedToday {
+                selectedDate = today
+                moonDisplayDate = today
+                visibleMonth = LocalDate(year: today.year, month: today.month, day: 1)
+            }
+        } else if let renderedAt, now.timeIntervalSince(renderedAt) < 60 {
+            return
+        }
+        lastRenderState = nil // redraw in place, no screen transition
+        renderOnce()
+    }
+
     private func renderOnce() {
         let newState = PopoverRenderState(
             screen: screen,
@@ -168,6 +189,9 @@ final class PopoverViewController: NSViewController {
                 self.view.window?.makeFirstResponder(self.quickDiaryField)
             }
         }
+
+        renderedToday = calendarModel.today()
+        renderedAt = Date()
 
         if let snapshot, transition != .none, !Motion.isReduced {
             playTransition(transition, overlay: snapshot)

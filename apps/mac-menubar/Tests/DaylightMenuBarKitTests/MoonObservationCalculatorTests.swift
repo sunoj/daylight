@@ -27,6 +27,30 @@ final class MoonObservationCalculatorTests: XCTestCase {
         XCTAssertLessThan(observation.azimuthDegrees, 360)
     }
 
+    /// 2026-09-11 03:27 UTC is a new moon (USNO). The J2000/Schlyter epoch
+    /// mix-up reported it as a 28-day-old waning crescent.
+    func testKnownNewMoonIsNew() {
+        let observation = MoonObservationCalculator().observation(
+            at: Date(timeIntervalSince1970: 1_789_097_220),
+            location: ObserverLocation(latitudeDegrees: 0, longitudeDegrees: 0)
+        )
+        XCTAssertTrue(observation.ageDays < 1 || observation.ageDays > 28.5, "age \(observation.ageDays)")
+        XCTAssertLessThan(observation.illuminatedFraction, 0.02)
+    }
+
+    /// The popover's moon must agree with the menu bar icon (Meeus series).
+    func testIlluminationAgreesWithMenuBarMoonPhase() {
+        let calculator = MoonObservationCalculator()
+        let menuBar = MoonPhaseCalculator()
+        let location = ObserverLocation(latitudeDegrees: 0, longitudeDegrees: 0)
+        let start = date(year: 2026, month: 1, day: 1, hour: 0)
+        for step in 0..<120 {
+            let instant = start.addingTimeInterval(Double(step) * 3 * 86_400)
+            let popover = calculator.observation(at: instant, location: location).illuminatedFraction
+            XCTAssertEqual(popover, menuBar.illuminatedFraction(for: instant), accuracy: 0.04, "\(instant)")
+        }
+    }
+
     func testKnownFullMoonDateIsMostlyIlluminated() {
         let calculator = MoonObservationCalculator()
         let location = ObserverLocation(latitudeDegrees: 0, longitudeDegrees: 0)

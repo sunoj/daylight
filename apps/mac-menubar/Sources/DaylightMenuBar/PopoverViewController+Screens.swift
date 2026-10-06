@@ -6,6 +6,12 @@ import AppKit
 
 extension PopoverViewController {
     func settingsScreen() -> NSView {
+        // Settings is taller than a small display's menu bar popover allows;
+        // scroll it so the last row (Quit) is always reachable.
+        scrollCapped(settingsPanel(), maxHeight: Metrics.settingsMaxHeight())
+    }
+
+    private func settingsPanel() -> NSView {
         pad(CalendarSettingsPanel(
             store: store,
             onDataChanged: onDataChanged,
@@ -23,8 +29,7 @@ extension PopoverViewController {
 
     func locationPromptScreen() -> NSView {
         pad(LocationPromptPanel(
-            onAllow: { [weak self] in self?.moonWantsLocation = true; self?.show(.moon) },
-            onSkip: { [weak self] in self?.moonWantsLocation = false; self?.show(.moon) }
+            onAllow: { [weak self] in self?.moonWantsLocation = true; self?.show(.moon) }
         ), top: 6, left: 14, bottom: 8, right: 14)
     }
 
@@ -76,6 +81,33 @@ extension PopoverViewController {
             view.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -bottom)
         ])
         return container
+    }
+
+    /// Hugs its content up to `maxHeight`, then scrolls.
+    func scrollCapped(_ content: NSView, maxHeight: CGFloat) -> NSScrollView {
+        let document = FlippedView()
+        content.translatesAutoresizingMaskIntoConstraints = false
+        document.translatesAutoresizingMaskIntoConstraints = false
+        document.addSubview(content)
+        NSLayoutConstraint.activate([
+            content.topAnchor.constraint(equalTo: document.topAnchor),
+            content.leadingAnchor.constraint(equalTo: document.leadingAnchor),
+            content.trailingAnchor.constraint(equalTo: document.trailingAnchor),
+            content.bottomAnchor.constraint(equalTo: document.bottomAnchor)
+        ])
+        let scroll = NSScrollView()
+        scroll.documentView = document
+        document.widthAnchor.constraint(equalTo: scroll.contentView.widthAnchor).isActive = true
+        scroll.drawsBackground = false
+        scroll.hasHorizontalScroller = false
+        scroll.hasVerticalScroller = true
+        scroll.scrollerStyle = .overlay
+        scroll.borderType = .noBorder
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        let hug = scroll.heightAnchor.constraint(equalTo: document.heightAnchor)
+        hug.priority = .defaultHigh
+        NSLayoutConstraint.activate([hug, scroll.heightAnchor.constraint(lessThanOrEqualToConstant: maxHeight)])
+        return scroll
     }
 
     func flexSpacer() -> NSView {

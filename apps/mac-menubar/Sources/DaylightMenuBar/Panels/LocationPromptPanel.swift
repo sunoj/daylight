@@ -6,11 +6,9 @@ import AppKit
 
 final class LocationPromptPanel: NSStackView {
     private let onAllow: () -> Void
-    private let onSkip: () -> Void
 
-    init(onAllow: @escaping () -> Void, onSkip: @escaping () -> Void) {
+    init(onAllow: @escaping () -> Void) {
         self.onAllow = onAllow
-        self.onSkip = onSkip
         super.init(frame: .zero)
         orientation = .vertical
         spacing = 16
@@ -38,11 +36,11 @@ final class LocationPromptPanel: NSStackView {
         // Add each pill BEFORE pinning its width to self: activating a constraint
         // between two views with no common ancestor yet throws, which left this
         // whole screen blank.
-        for pill in [pillButton(L("允许使用定位"), filled: true, action: #selector(allow)),
-                     pillButton(L("暂不开启"), filled: false, action: #selector(skip))] {
-            addArrangedSubview(pill)
-            pill.widthAnchor.constraint(equalTo: widthAnchor, constant: -40).isActive = true
-        }
+        // A single Continue (Guideline 5.1.1(iv)): a "Not now" here would let
+        // the pre-prompt stand between the user and the system's own choice.
+        let pill = pillButton(L("继续"), action: #selector(allow))
+        addArrangedSubview(pill)
+        pill.widthAnchor.constraint(equalTo: widthAnchor, constant: -40).isActive = true
         widthConstraint(title)
         widthConstraint(body)
     }
@@ -110,24 +108,9 @@ final class LocationPromptPanel: NSStackView {
         return box
     }
 
-    private func pillButton(_ title: String, filled: Bool, action: Selector) -> NSView {
-        if filled {
-            return UI.filledButton(title, target: self, action: action, height: 44, radius: 999)
-        }
-        let button = RowButton(target: self, action: action)
-        let box = UI.roundedBox(fill: .clear, radius: 999, border: Palette.line)
-        let label = UI.label(title, font: Typography.sans(15, .medium), color: Palette.ink, align: .center)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        box.addSubview(label)
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: box.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: box.centerYAnchor)
-        ])
-        button.addContentView(box)
-        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        return button
+    private func pillButton(_ title: String, action: Selector) -> NSView {
+        UI.filledButton(title, target: self, action: action, height: 44, radius: 999)
     }
 
     @objc private func allow() { onAllow() }
-    @objc private func skip() { onSkip() }
 }

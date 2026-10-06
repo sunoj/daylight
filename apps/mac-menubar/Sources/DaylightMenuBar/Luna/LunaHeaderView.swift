@@ -87,7 +87,7 @@ final class LunaHeaderView: NSStackView {
     }
 
     private func glyph(_ symbol: String) -> NSImageView {
-        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: symbol)?
+        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: SymbolLabels.description(for: symbol))?
             .withSymbolConfiguration(.init(pointSize: 14, weight: .medium))
         let view = NSImageView(image: image ?? NSImage())
         view.contentTintColor = Palette.ink2

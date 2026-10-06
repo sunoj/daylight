@@ -24,9 +24,9 @@ extension HolidaySubscription {
 struct UserSettings: Codable {
     var language: String = AppLanguage.systemDefault.rawValue
     var colorScheme: String = "system"
-    var showLunarDate: Bool = true
+    var showLunarDate: Bool = UserSettings.firstLaunch().showLunarDate
     var showWeekNumbers: Bool = true
-    var calendarType: String = CalendarWeekRule.iso8601.rawValue
+    var calendarType: String = UserSettings.firstLaunch().weekRule.rawValue
     // Luna/Sol settings default existing users to the compact screen.
     var uiMode: String = "luna"
     var lunaShowLunarDate: Bool = false
@@ -34,8 +34,8 @@ struct UserSettings: Codable {
     var hiddenCalendarIds: [String] = []
     // Menu bar status item: an ordered list of rendered segments plus format.
     // Segment ids: "moon" | "dateBox" | "gregorian" | "lunar" | "weekday" | "time"
-    var statusSegments: [String] = ["moon", "lunar"]
-    var statusUse24HourTime: Bool = true
+    var statusSegments: [String] = UserSettings.firstLaunch().statusSegments
+    var statusUse24HourTime: Bool = UserSettings.firstLaunch().use24Hour
 
     // Legal-holiday subscriptions (iCal).
     var holidaySubscriptions: [HolidaySubscription] = []
@@ -45,6 +45,37 @@ struct UserSettings: Codable {
         CalendarWeekRule(rawValue: calendarType) ?? .iso8601
     }
     var isLunaUI: Bool { uiMode == "luna" }
+}
+
+/// First-launch defaults that follow the system language and region.
+struct FirstLaunchDefaults: Equatable {
+    var showLunarDate: Bool
+    var statusSegments: [String]
+    var use24Hour: Bool
+    var weekRule: CalendarWeekRule
+}
+
+extension UserSettings {
+    /// Lunar text is Chinese by design, so only Chinese-language users see it
+    /// before opting in; everyone else starts with a Gregorian menu bar day.
+    static func firstLaunch(language: AppLanguage = .systemDefault, locale: Locale = .current) -> FirstLaunchDefaults {
+        let chinese = language == .zh || language == .zhHant
+        let hourFormat = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: locale) ?? "HH"
+        // Chinese users keep the Monday-first ISO week the app always used
+        // (Foundation reports Sunday for zh_CN); others follow their region.
+        let weekRule: CalendarWeekRule
+        switch chinese ? 2 : locale.calendar.firstWeekday {
+        case 1: weekRule = .us
+        case 7: weekRule = .arabic
+        default: weekRule = .iso8601
+        }
+        return FirstLaunchDefaults(
+            showLunarDate: chinese,
+            statusSegments: chinese ? ["moon", "lunar"] : ["moon", "dateBox"],
+            use24Hour: !hourFormat.contains("a"),
+            weekRule: weekRule
+        )
+    }
 }
 extension UserSettings {
     enum CodingKeys: String, CodingKey {
@@ -83,9 +114,9 @@ extension UserSettings {
             hiddenCalendarIds: try container.decodeIfPresent([String].self, forKey: .hiddenCalendarIds) ?? defaults.hiddenCalendarIds,
             statusSegments: try container.decodeIfPresent([String].self, forKey: .statusSegments) ?? defaults.statusSegments,
             statusUse24HourTime: try container.decodeIfPresent(Bool.self, forKey: .statusUse24HourTime) ?? defaults.statusUse24HourTime,
-            holidaySubscriptions: subscriptions ?? (legacySubscribed ? [
+            holidaySubscriptions: HolidayService.migratingRetiredPresets(subscriptions ?? (legacySubscribed ? [
                 HolidaySubscription(id: "legacy-\(legacySource)", sourceId: legacySource, customURL: legacyURL, colorId: "rust", enabled: true)
-            ] : defaults.holidaySubscriptions),
+            ] : defaults.holidaySubscriptions)),
             holidayUpdateWeekly: try container.decodeIfPresent(Bool.self, forKey: .holidayUpdateWeekly) ?? defaults.holidayUpdateWeekly
         )
     }
@@ -252,6 +283,18 @@ final class DaylightStore {
     func saveObserverLocation(_ location: ObserverLocation, timestamp: Date = Date()) {
         write(CachedObserverLocation(location: location, timestamp: timestamp), key: "observerLocation")
     }
+    /// When holiday feeds last synced successfully, and in which UI language
+    /// (GovHK serves names per language, so a language change is a resync).
+    func holidaySyncStamp() -> (date: Date, language: String)? {
+        guard let date = defaults.object(forKey: "holidayLastSync") as? Date else { return nil }
+        return (date, defaults.string(forKey: "holidayLastSyncLanguage") ?? "")
+    }
+
+    func saveHolidaySyncStamp(_ date: Date, language: String) {
+        defaults.set(date, forKey: "holidayLastSync")
+        defaults.set(language, forKey: "holidayLastSyncLanguage")
+    }
+
     func clearObserverLocation() {
         defaults.removeObject(forKey: "observerLocation")
         invalidateCache(for: "observerLocation")

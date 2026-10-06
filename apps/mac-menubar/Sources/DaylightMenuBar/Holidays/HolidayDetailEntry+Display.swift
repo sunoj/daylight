@@ -8,7 +8,7 @@ import Foundation
 extension HolidayDetailEntry {
     var displayTitle: String {
         let name = day.name?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return name.isEmpty ? typeLabel : L(name)
+        return name.isEmpty ? typeLabel : Loc.holidayName(name)
     }
 
     var displaySubtitle: String {

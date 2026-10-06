@@ -161,6 +161,12 @@ enum Metrics {
     static let weekColumnWidth: CGFloat = 26
     /// Sol's selected-day agenda hugs its document height until this cap, then scrolls.
     static let solAgendaMaxHeight: CGFloat = 180
+    /// Tallest the settings screen may grow before it scrolls: the menu bar
+    /// screen's visible height less room for the popover arrow and a margin.
+    static func settingsMaxHeight(screen: NSScreen? = NSScreen.main) -> CGFloat {
+        let visible = screen?.visibleFrame.height ?? 800
+        return max(360, visible - 48)
+    }
     /// Luna-grid day cell: one number plus a row of event dots.
     static let lunaCellHeight: CGFloat = 36
     /// Luna-grid day cell with an optional lunar subtitle line.

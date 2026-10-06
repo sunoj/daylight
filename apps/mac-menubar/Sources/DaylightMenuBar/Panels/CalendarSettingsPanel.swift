@@ -57,7 +57,7 @@ final class CalendarSettingsPanel: NSStackView {
         ]))
         section(L("日历"))
         full(group([
-            segmentedRow("calendar.badge.clock", L("每周起始日"), [L("周一"), L("周日")], settings.weekRule.firstWeekday == 1 ? 1 : 0) { [weak self] in self?.setWeekStart($0) },
+            segmentedRow("calendar.badge.clock", L("每周起始日"), [L("周一"), L("周日"), L("周六")], weekStartIndex(settings.weekRule)) { [weak self] in self?.setWeekStart($0) },
             selectRow("globe", L("日历类型"), calendarTypeName(settings.weekRule), #selector(openCalendarTypeMenu(_:)))
         ]))
         section(L("工具栏"))
@@ -69,7 +69,8 @@ final class CalendarSettingsPanel: NSStackView {
         ]))
         section(L("数据与同步"))
         full(group([
-            navRow("calendar.badge.checkmark", L("系统日历"), systemCalendarSummary(settings), #selector(openSystemCalendar)),
+            // calendar.badge.checkmark needs macOS 14; checklist exists on 13.
+            navRow("checklist", L("系统日历"), systemCalendarSummary(settings), #selector(openSystemCalendar)),
             navRow("calendar.badge.plus", L("订阅节假日"), holidaySummary(settings), #selector(openHolidays)),
             actionRow("square.and.arrow.up", L("导出日记"), "\(store.allThoughts().count)", #selector(exportDiary))
         ]))
@@ -78,6 +79,8 @@ final class CalendarSettingsPanel: NSStackView {
         #if !APP_STORE
         aboutRows.append(actionRow("arrow.triangle.2.circlepath", L("检查更新"), "", #selector(checkForUpdates)))
         #endif
+        aboutRows.append(actionRow("hand.raised", L("隐私政策"), "", #selector(openPrivacyPolicy)))
+        aboutRows.append(actionRow("questionmark.circle", L("帮助与支持"), "", #selector(openSupport)))
         full(group(aboutRows))
         full(group([
             destructiveActionRow("rectangle.portrait.and.arrow.right", L("退出 Daylight"), #selector(quitDaylight))
@@ -179,9 +182,22 @@ final class CalendarSettingsPanel: NSStackView {
         update { $0.colorScheme = scheme }
     }
 
-    private func setWeekStart(_ index: Int) {
-        update { $0.calendarType = (index == 1 ? CalendarWeekRule.us : .iso8601).rawValue }
+    /// Segment index for Mon / Sun / Sat. Hebrew starts on Sunday like US.
+    func weekStartIndex(_ rule: CalendarWeekRule) -> Int {
+        switch rule.firstWeekday {
+        case 1: return 1
+        case 7: return 2
+        default: return 0
+        }
     }
+
+    private func setWeekStart(_ index: Int) {
+        let rule: CalendarWeekRule = index == 1 ? .us : index == 2 ? .arabic : .iso8601
+        update { $0.calendarType = rule.rawValue }
+    }
+
+    @objc private func openPrivacyPolicy() { NSWorkspace.shared.open(SiteLinks.privacyPolicy()) }
+    @objc private func openSupport() { NSWorkspace.shared.open(SiteLinks.support()) }
 
     @objc private func openStatusEditor() { onOpenStatusEditor() }
     @objc private func openHolidays() { onOpenHolidays() }

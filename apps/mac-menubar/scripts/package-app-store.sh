@@ -43,6 +43,7 @@ lipo -create "$BIN_DIR/DaylightMenuBar" "$INTEL_BIN_DIR/DaylightMenuBar" -output
 cp -R "$BIN_DIR/DaylightMenuBar_DaylightMenuBarKit.bundle" "$APP/Contents/Resources/"
 cp "$ROOT_DIR/AppIcon.icns" "$APP/Contents/Resources/"
 cp "$ROOT_DIR/packaging/PrivacyInfo.xcprivacy" "$APP/Contents/Resources/"
+cp -R "$ROOT_DIR/packaging/Localizations/"*.lproj "$APP/Contents/Resources/"
 cp "$PROFILE_PATH" "$APP/Contents/embedded.provisionprofile"
 
 python3 - "$ROOT_DIR" "$APP" "$TEAM_ID" "$BUNDLE_ID" "$VERSION" "$BUILD" "$OUTPUT_DIR" <<'PY'

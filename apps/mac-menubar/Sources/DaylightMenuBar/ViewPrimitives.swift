@@ -144,3 +144,8 @@ final class LayerColorView: NSView {
         needsDisplay = true
     }
 }
+
+/// Top-left origin, so a scroll view's document starts at its top.
+final class FlippedView: NSView {
+    override var isFlipped: Bool { true }
+}

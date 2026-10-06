@@ -21,12 +21,18 @@ mkdir -p "$MACOS_DIR" "$RESOURCES_DIR"
 cp "$BIN_DIR/DaylightMenuBar" "$MACOS_DIR/DaylightMenuBar"
 cp -R "$BIN_DIR/DaylightMenuBar_DaylightMenuBarKit.bundle" "$RESOURCES_DIR/"
 cp "$ROOT_DIR/AppIcon.icns" "$RESOURCES_DIR/AppIcon.icns"
+# Localized permission prompts: macOS picks the .lproj matching the system language.
+cp -R "$ROOT_DIR/packaging/Localizations/"*.lproj "$RESOURCES_DIR/"
 
 cat > "$CONTENTS_DIR/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>en</string>
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
   <key>CFBundleExecutable</key>
   <string>DaylightMenuBar</string>
   <key>CFBundleIconFile</key>
@@ -46,13 +52,13 @@ cat > "$CONTENTS_DIR/Info.plist" <<'PLIST'
   <key>LSUIElement</key>
   <true/>
   <key>NSLocationUsageDescription</key>
-  <string>「昼间」仅在你打开 3D 月相模型时使用你的位置，用于计算当地观测的月亮高度角、方位角与相位朝向。简单月相无需定位。</string>
+  <string>Daylight uses your location only when you open the 3D moon model, to compute the moon's altitude, azimuth and phase orientation as seen from where you are. The simple moon phase does not need your location.</string>
   <key>NSLocationWhenInUseUsageDescription</key>
-  <string>「昼间」仅在你打开 3D 月相模型时使用你的位置，用于计算当地观测的月亮高度角、方位角与相位朝向。简单月相无需定位。</string>
+  <string>Daylight uses your location only when you open the 3D moon model, to compute the moon's altitude, azimuth and phase orientation as seen from where you are. The simple moon phase does not need your location.</string>
   <key>NSCalendarsUsageDescription</key>
-  <string>「昼间」读取你的系统日历，用于在日历网格上标出有日程的日子并列出当天的安排。数据仅在本机使用，不会上传。</string>
+  <string>Daylight reads your system calendars to mark days that have events on the calendar grid and list that day's schedule. The data is used only on this Mac and is never uploaded.</string>
   <key>NSCalendarsFullAccessUsageDescription</key>
-  <string>「昼间」只读取你的系统日历，用于在日历网格上标出有日程的日子并列出当天的安排。数据仅在本机使用，不会上传。</string>
+  <string>Daylight only reads your system calendars to mark days that have events on the calendar grid and list that day's schedule. The data is used only on this Mac and is never uploaded.</string>
 </dict>
 </plist>
 PLIST

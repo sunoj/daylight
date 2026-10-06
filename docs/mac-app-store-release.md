@@ -78,6 +78,28 @@ A failed `asc review submit` attempt left an empty `READY_FOR_REVIEW` draft, `de
 
 Run `package-app-store.sh` with `bash`. The file is not executable.
 
+### 2.0.5 rejection and the review audit (2026-10-04)
+
+App Review rejected 2.0.5 under two guidelines:
+
+- **Guideline 4:** the system permission prompts were Chinese-only while the app showed English.
+- **5.1.1(iv):** the screen before the calendar request ended in "Authorize calendar access" instead of a neutral "Continue".
+
+The fix grew into a full review audit:
+
+- **Permission prompts:** they are now localized in `packaging/Localizations/*.lproj`. Every pre-permission screen ends in a single Continue.
+- **Menu bar and lunar dates:** the menu bar no longer shows the Chinese lunar day to non-Chinese users on first launch.
+- **Privacy:** the app links its privacy policy, and the policy states the 7-day location cache.
+- **Holiday presets:** the Taiwan preset had no feed, and officeholidays.com forbids automated access, so both presets are gone.
+- **Listing:** the review notes in `listing.json` now give the path to every permission and network feature.
+
+Two test files keep these from coming back:
+
+- `LocalizationComplianceTests.swift` covers strings and permission prompts.
+- `AppStoreReviewTests.swift` covers behaviour, including an English first-launch render sweep that asserts no Chinese on any screen.
+
+Resubmit with a new version or build number, because a rejected binary cannot be reused.
+
 ## Verification
 
 - The latest native suite ran 173 tests with zero failures; the opt-in screenshot export was skipped in that run and separately verified with a Traditional Chinese screenshot.

@@ -42,7 +42,7 @@ struct CalendarDayTitleFormatter {
         let holidayColorIds = holidayHits.map(\.subscription.colorId)
         let holidayTooltip = holidayTooltip(for: day.date, holidayHits: holidayHits)
         if let publicName = publicDay?.name {
-            return CalendarDayTitle(primary: primary, secondary: L(publicName), isSolarTerm: false, holidayColorIds: holidayColorIds, holidayTooltip: holidayTooltip)
+            return CalendarDayTitle(primary: primary, secondary: Loc.holidayName(publicName), isSolarTerm: false, holidayColorIds: holidayColorIds, holidayTooltip: holidayTooltip)
         }
         guard settings.showLunarDate, let lunar = lunarCalendar.lunarDate(for: day.date) else {
             return CalendarDayTitle(primary: primary, secondary: nil, isSolarTerm: false, holidayColorIds: holidayColorIds, holidayTooltip: holidayTooltip)
@@ -66,7 +66,7 @@ struct CalendarDayTitleFormatter {
 
     private func holidayName(_ day: PublicCalendarDay) -> String {
         let name = day.name?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return name.isEmpty ? holidayTypeName(day.type) : L(name)
+        return name.isEmpty ? holidayTypeName(day.type) : Loc.holidayName(name)
     }
 
     private func holidayTypeName(_ type: String) -> String {

@@ -64,13 +64,13 @@ extension SystemCalendarPanel {
 
     func authorizationCard(canRequestAccess: Bool) -> NSView {
         let copy = UI.label(
-            L("允许访问系统日历"),
+            L("显示系统日历中的日程"),
             font: Typography.sans(12.5),
             color: Palette.ink3,
             align: .center
         )
         let action = canRequestAccess
-            ? UI.filledButton(L("授权访问日历"), target: self, action: #selector(requestAccess), height: 30)
+            ? UI.filledButton(L("继续"), target: self, action: #selector(requestAccess), height: 30)
             : UI.filledButton(L("打开系统设置"), target: self, action: #selector(openSystemSettings), height: 30)
         let column = NSStackView(views: [copy, action])
         column.orientation = .vertical

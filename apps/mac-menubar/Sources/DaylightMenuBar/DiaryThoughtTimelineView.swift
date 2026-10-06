@@ -283,6 +283,10 @@ enum DiaryThoughtTimeLabel {
         guard let saved = ISO8601DateFormatter().date(from: iso) ?? fractionalFormatter.date(from: iso) else { return "" }
         if Date().timeIntervalSince(saved) < 60 { return L("刚刚") }
         let formatter = DateFormatter()
+        // Pin a Gregorian POSIX locale: the system calendar (Buddhist, Japanese)
+        // would otherwise rewrite yyyy behind the app's language setting.
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
         formatter.dateFormat = Calendar(identifier: .gregorian).isDateInToday(saved) ? "HH:mm" : "yyyy-MM-dd"
         return formatter.string(from: saved)
     }

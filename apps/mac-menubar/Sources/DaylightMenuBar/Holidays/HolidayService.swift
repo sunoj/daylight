@@ -26,15 +26,46 @@ final class HolidayService {
     static let feedBase = "https://holidays.mings.work"
 
     static let presets: [HolidaySource] = [
-        HolidaySource(id: "cn", name: "中国大陆", detail: "国务院办公厅 · 官方公告", count: .daysPerYear(13),
+        HolidaySource(id: "cn", name: "中国大陆", detail: "依据国务院办公厅通知", count: .daysPerYear(13),
                       url: "\(feedBase)/cn.ics?v=2"),
+        // GovHK publishes the same calendar in three languages; see url(for:).
         HolidaySource(id: "hk", name: "中国香港特别行政区", detail: "GovHK 官方日历", count: .days(17),
-                      url: "https://www.1823.gov.hk/common/ical/tc.ics"),
-        HolidaySource(id: "tw", name: "中国台湾", detail: "行政院人事行政总处", count: .unknown, url: nil),
-        HolidaySource(id: "th", name: "泰国", detail: "officeholidays.com", count: .unknown,
-                      url: "https://www.officeholidays.com/ics/thailand"),
-        HolidaySource(id: "custom", name: "自定义 iCal 链接", detail: "粘贴任意 .ics 订阅地址", count: .none, url: nil)
+                      url: "https://www.1823.gov.hk/common/ical/en.ics"),
+        HolidaySource(id: "custom", name: "自定义订阅链接", detail: "粘贴任意 .ics 订阅地址", count: .none, url: nil)
     ]
+
+    /// Presets retired in 2.0.6: "tw" never had a feed, and officeholidays.com's
+    /// terms forbid automated access to its "th" feed. A "th" subscription keeps
+    /// working as the user's own custom link; "tw" is dropped.
+    static func migratingRetiredPresets(_ subscriptions: [HolidaySubscription]) -> [HolidaySubscription] {
+        subscriptions.compactMap { subscription in
+            switch subscription.sourceId {
+            case "tw":
+                return nil
+            case "th":
+                var custom = subscription
+                custom.sourceId = "custom"
+                custom.customURL = "https://www.officeholidays.com/ics/thailand"
+                if custom.name.isEmpty { custom.name = "泰国" }
+                return custom
+            default:
+                return subscription
+            }
+        }
+    }
+
+    /// The preset feed in the active language, so feed-provided holiday names
+    /// match the UI (GovHK: sc / tc / en).
+    static func url(for source: HolidaySource, language: AppLanguage = Loc.language) -> URL? {
+        guard source.id == "hk" else { return source.url.flatMap(URL.init(string:)) }
+        let variant: String
+        switch language {
+        case .zh: variant = "sc"
+        case .zhHant: variant = "tc"
+        case .en, .th: variant = "en"
+        }
+        return URL(string: "https://www.1823.gov.hk/common/ical/\(variant).ics")
+    }
 
     private let store: DaylightStore
 
@@ -51,7 +82,7 @@ final class HolidayService {
         if source == "custom" {
             return URL(string: customURL.trimmingCharacters(in: .whitespacesAndNewlines))
         }
-        return HolidayService.preset(source)?.url.flatMap(URL.init(string:))
+        return HolidayService.preset(source).flatMap { HolidayService.url(for: $0) }
     }
 
     /// Fetches the feed, parses it, and replaces the stored public days.
@@ -172,7 +203,7 @@ final class HolidayService {
         let imported = calendarName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         if !imported.isEmpty { return imported }
         let host = url?.host?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return host.isEmpty ? "自定义 iCal 链接" : host
+        return host.isEmpty ? "自定义订阅链接" : host
     }
 
     static func stripSharedFeedPrefix(from days: [PublicCalendarDay], eventNames: [String?]) -> [PublicCalendarDay] {

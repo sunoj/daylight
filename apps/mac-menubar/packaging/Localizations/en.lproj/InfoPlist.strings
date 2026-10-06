@@ -1,0 +1,5 @@
+/* Permission prompts shown by macOS. Keep in sync with the other .lproj copies. */
+"NSCalendarsUsageDescription" = "Daylight reads your system calendars to mark days that have events on the calendar grid and list that day's schedule. The data is used only on this Mac and is never uploaded.";
+"NSCalendarsFullAccessUsageDescription" = "Daylight only reads your system calendars to mark days that have events on the calendar grid and list that day's schedule. The data is used only on this Mac and is never uploaded.";
+"NSLocationUsageDescription" = "Daylight uses your location only when you open the 3D moon model, to compute the moon's altitude, azimuth and phase orientation as seen from where you are. The simple moon phase does not need your location.";
+"NSLocationWhenInUseUsageDescription" = "Daylight uses your location only when you open the 3D moon model, to compute the moon's altitude, azimuth and phase orientation as seen from where you are. The simple moon phase does not need your location.";

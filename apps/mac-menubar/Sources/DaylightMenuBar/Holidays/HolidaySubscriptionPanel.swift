@@ -161,6 +161,9 @@ final class HolidaySubscriptionPanel: NSStackView {
                 if case .failure = $0.result { return true }
                 return false
             }
+            if imported > 0 {
+                self.store.saveHolidaySyncStamp(Date(), language: Loc.language.rawValue)
+            }
             if failures.isEmpty, !results.isEmpty {
                 let resolved = self.resolvedSubscriptions(from: subscriptions, results: results)
                 self.onToast("\(L("已订阅")) · \(imported)")

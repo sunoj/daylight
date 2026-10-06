@@ -40,8 +40,10 @@ final class SystemCalendarService {
     var authorization: SystemCalendarAuthorization {
         if #available(macOS 14.0, *) {
             switch EKEventStore.authorizationStatus(for: .event) {
-            case .fullAccess, .writeOnly: return .authorized
-            case .denied: return .denied
+            case .fullAccess: return .authorized
+            // "Add events only" cannot read anything, so treat it like a denial:
+            // the panels then offer System Settings instead of an empty agenda.
+            case .writeOnly, .denied: return .denied
             case .restricted: return .restricted
             case .notDetermined: return .notDetermined
             @unknown default: return .denied
