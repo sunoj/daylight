@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [2.0.6] - 2026-10-06
 
 ### Changed
 - Permission requests, including the system prompts, now appear in the app's language: English, Simplified Chinese, Traditional Chinese or Thai.
